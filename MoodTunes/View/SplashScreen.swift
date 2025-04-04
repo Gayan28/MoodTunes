@@ -13,7 +13,7 @@ struct SplashScreen: View {
             Spacer()
             
             // Logo
-            Image("Logo") // Make sure this image is in your Assets.xcassets
+            Image("Logo")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 330, height: 270)
@@ -24,7 +24,7 @@ struct SplashScreen: View {
                 .multilineTextAlignment(.center)
                 .foregroundColor(.black)
             
-            // Description with music icon and italic style
+            // Description 
             HStack(alignment: .top, spacing: 5) {
                 Text("🎵")
                     .font(.system(size: 20))
