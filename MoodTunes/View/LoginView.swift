@@ -1,5 +1,5 @@
 //
-//  RegisterScreen.swift
+//  LoginScreen.swift
 //  MoodTunes
 //
 //  Created by Gayan Kavinda on 2025-04-04.
@@ -7,12 +7,10 @@
 
 import SwiftUI
 
-struct RegisterView: View {
-    @State private var userName = ""
+struct LoginView: View {
     @State private var email = ""
     @State private var password = ""
-    @State private var confirmPassword = ""
-    @State private var isRegisterSelected = true
+    @State private var isRegisterSelected = false
 
     var body: some View {
         VStack {
@@ -23,12 +21,6 @@ struct RegisterView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 202, height: 138)
-
-            // App Name
-            Text("MOODTUNES")
-                .font(.custom("Times New Roman", size: 24))
-                .foregroundColor(.black)
-                .kerning(2)
 
             // Register/Login Toggle
             HStack(spacing: 0) {
@@ -54,6 +46,10 @@ struct RegisterView: View {
                         .padding(.vertical, 10)
                         .background(!isRegisterSelected ? Color.white : Color.clear)
                         .cornerRadius(5)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 5)
+                                .stroke(!isRegisterSelected ? Color.black : Color.clear, lineWidth: 1)
+                        )
                 }
             }
             .frame(height: 40)
@@ -64,18 +60,16 @@ struct RegisterView: View {
 
             // Input Fields
             Group {
-                CustomTextField(placeholder: "User Name", text: $userName)
                 CustomTextField(placeholder: "Email", text: $email)
                 SecureTextField(placeholder: "Password", text: $password)
-                SecureTextField(placeholder: "Confirm Password", text: $confirmPassword)
             }
             .padding(.horizontal, 30)
 
-            // Sign Up Button
+            // Sign In Button
             Button(action: {
-                // Sign Up action
+                // Handle Sign In
             }) {
-                Text("Sign Up")
+                Text("Sign In")
                     .foregroundColor(.white)
                     .fontWeight(.bold)
                     .frame(maxWidth: .infinity)
@@ -86,21 +80,29 @@ struct RegisterView: View {
             .padding(.top, 20)
             .padding(.horizontal, 30)
 
-            // Conditions Text
+            // Forgot Password
             HStack {
-                Text("By signing up, you accept our")
+                Text("Forgot password?")
                     .foregroundColor(.black.opacity(0.7))
-                Text("conditions")
-                    .foregroundColor(.blue)
+                Button(action: {
+                    // Forgot Password action
+                }) {
+                    Text("Remember")
+                        .foregroundColor(.blue)
+                }
             }
             .padding(.top, 10)
 
-            // Login Redirect
+            // Register Redirect
             HStack {
-                Text("Have an account?")
+                Text("Don’t have an account?")
                     .foregroundColor(.black.opacity(0.7))
-                Text("Login")
-                    .foregroundColor(.blue)
+                Button(action: {
+                    // Navigate to Register Page
+                }) {
+                    Text("Register")
+                        .foregroundColor(.blue)
+                }
             }
             .padding(.top, 5)
 
@@ -110,8 +112,8 @@ struct RegisterView: View {
     }
 }
 
-struct RegisterView_Previews: PreviewProvider {
+struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        RegisterView()
+        LoginView()
     }
 }
