@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct OTPVerificationView: View {
+struct VerificationScreen: View {
     @State private var otp1 = ""
     @State private var otp2 = ""
     @State private var otp3 = ""
@@ -95,6 +95,6 @@ struct OTPTextField: View {
 
 struct OTPVerificationView_Previews: PreviewProvider {
     static var previews: some View {
-        OTPVerificationView()
+        VerificationScreen()
     }
 }
