@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MoodSelectionView: View {
     @Binding var selectedTab: TabItem
+    @State private var isNavigatingToDetector = false
 
     let columns = [
         GridItem(.flexible()),
@@ -16,55 +17,60 @@ struct MoodSelectionView: View {
     ]
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            VStack(alignment: .leading, spacing: 16) {
-                Spacer().frame(height: 40)
+        NavigationView {
+            ZStack(alignment: .bottom) {
+                VStack(alignment: .leading, spacing: 10) {
+                    Spacer().frame(height: 40)
 
-                // Title
-                Text("Choose Your Mood")
-                    .font(.system(size: 28, weight: .bold))
-                    .foregroundColor(.white)
-
-                Text("What is your mood today?")
-                    .font(.system(size: 15))
-                    .foregroundColor(.gray)
-
-                // Mood Grid
-                LazyVGrid(columns: columns, spacing: 16) {
-                    MoodItem(imageName: "happymood", title: "Happy")
-                    MoodItem(imageName: "angrymood", title: "Angry")
-                    MoodItem(imageName: "sadmood", title: "Sad")
-                    MoodItem(imageName: "relaxmood", title: "Relax")
-                }
-
-                // Auto Detect Button
-                Button(action: {
-                    // Handle auto-detect mood
-                }) {
-                    Text("Auto - Detect")
-                        .fontWeight(.bold)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.blue)
+                    // Title
+                    Text("Choose Your Mood")
+                        .font(.system(size: 28, weight: .bold))
                         .foregroundColor(.white)
-                        .cornerRadius(12)
+
+                    Text("What is your mood today?")
+                        .font(.system(size: 20))
+                        .foregroundColor(.gray)
+
+                    // Mood Grid
+                    LazyVGrid(columns: columns, spacing: 16) {
+                        MoodItem(imageName: "happymood", title: "Happy")
+                        MoodItem(imageName: "angrymood", title: "Angry")
+                        MoodItem(imageName: "sadmood", title: "Sad")
+                        MoodItem(imageName: "relaxmood", title: "Relax")
+                    }
+
+                    // Auto Detect Button
+                    NavigationLink(destination: MoodDetectorView(), isActive: $isNavigatingToDetector) {
+                        Button(action: {
+                            isNavigatingToDetector = true
+                        }) {
+                            Text("Auto - Detect")
+                                .fontWeight(.bold)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.blue)
+                                .foregroundColor(.white)
+                                .cornerRadius(12)
+                        }
+                    }
+                    .padding(.top, 40)
+
+                    Spacer()
                 }
-                .padding(.top, 40)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 90)
 
-                Spacer()
+                // Custom Tab Bar
+                CustomTabBar(selectedTab: $selectedTab)
+                    .frame(height: 70)
+                    .frame(maxWidth: .infinity)
+                    .background(Color.black.opacity(0.9))
+                    .edgesIgnoringSafeArea(.bottom)
             }
-            .padding(.horizontal, 20)
-            .padding(.bottom, 90)
-
-            // Custom Tab Bar
-            CustomTabBar(selectedTab: $selectedTab)
-                .frame(height: 70)
-                .frame(maxWidth: .infinity)
-                .background(Color.black.opacity(0.9))
-                .edgesIgnoringSafeArea(.bottom)
+            .background(Color(hex: "#0F0817"))
+            .edgesIgnoringSafeArea(.bottom)
+            .navigationBarHidden(true)
         }
-        .background(Color(hex: "#0F0817"))
-        .edgesIgnoringSafeArea(.bottom)
     }
 }
 
@@ -82,7 +88,7 @@ struct MoodItem: View {
                 .cornerRadius(12)
 
             Text(title)
-                .font(.system(size: 20, weight: .semibold)) // ✅ Updated font size
+                .font(.system(size: 20, weight: .semibold))
                 .foregroundColor(.white)
         }
     }

@@ -23,7 +23,7 @@ struct HomeView: View {
                 case .playing:
                     NowPlayingView()
                 case .settings:
-                    SettingsView()
+                    SettingsView(selectedTab: $selectedTab)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
