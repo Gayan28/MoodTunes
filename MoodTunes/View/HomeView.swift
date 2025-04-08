@@ -12,23 +12,27 @@ struct HomeView: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            switch selectedTab {
-            case .home:
-                DashboardView(selectedTab: $selectedTab)
-            case .moods:
-                MoodSelectionView()
-            case .map:
-                MapView()
-            case .playing:
-                NowPlayingView()
-            case .settings:
-                SettingsView()
+            Group {
+                switch selectedTab {
+                case .home:
+                    DashboardView(selectedTab: $selectedTab)
+                case .moods:
+                    MoodSelectionView(selectedTab: $selectedTab) 
+                case .map:
+                    MapView()
+                case .playing:
+                    NowPlayingView()
+                case .settings:
+                    SettingsView()
+                }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color(hex: "#0F0817"))
 
-            // Full width tab bar
             CustomTabBar(selectedTab: $selectedTab)
+                .frame(height: 70)
                 .frame(maxWidth: .infinity)
-                .background(Color.black.opacity(0.8))
+                .background(Color.black.opacity(0.9))
                 .edgesIgnoringSafeArea(.bottom)
         }
     }
@@ -54,7 +58,7 @@ struct DashboardView: View {
             HStack {
                 Spacer()
                 ZStack(alignment: .bottomLeading) {
-                    RoundedRectangle(cornerRadius: 20)
+                    RoundedRectangle(cornerRadius: 12)
                         .fill(Color.blue)
                         .frame(width: 350, height: 410)
                         .overlay(
@@ -90,8 +94,9 @@ struct DashboardView: View {
             Spacer()
         }
         .padding(.horizontal, 20)
+        .padding(.bottom, 70)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(red: 15/255, green: 8/255, blue: 23/255))
+        .background(Color(hex: "#0F0817"))
     }
 }
 
@@ -104,18 +109,18 @@ struct CategoryCard: View {
             Image(imageName)
                 .resizable()
                 .scaledToFill()
-                .frame(width: 110, height: 100)
+                .frame(width: 110, height: 125)
                 .clipped()
                 .cornerRadius(10)
 
             Text(title)
                 .font(.system(size: 16, weight: .bold))
                 .foregroundColor(.white)
-                .frame(width: 110, height: 100, alignment: .bottom)
+                .frame(width: 110, height: 125, alignment: .bottom)
                 .background(Color.black.opacity(0.5))
                 .cornerRadius(10)
         }
-        .frame(width: 110, height: 100)
+        .frame(width: 110, height: 125)
         .cornerRadius(10)
     }
 }
@@ -126,7 +131,7 @@ struct HomeView_Previews: PreviewProvider {
     }
 }
 
-// Color Extension (kept for future use if needed)
+// Color Extension
 extension Color {
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
