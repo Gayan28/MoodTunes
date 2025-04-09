@@ -1,24 +1,25 @@
 //
-//  PlaylistsView.swift
+//  NowPlaying.swift
 //  MoodTunes
 //
-//  Created by Gayan Kavinda on 2025-04-07.
+//  Created by Gayan Kavinda on 2025-04-03.
 //
 
 import SwiftUI
 
-struct PlaylistsView: View {
+struct NowPlayingView: View {
     var body: some View {
         ZStack {
-            Text("Mood Selection")
+            
+            Text("Now Playing")
                 .font(.title)
                 .foregroundColor(.white)
         }
     }
 }
 
-struct PlaylistsView_Previews: PreviewProvider {
+struct NowPlayingView_Previews: PreviewProvider {
     static var previews: some View {
-        PlaylistsView()
+        NowPlayingView()
     }
 }

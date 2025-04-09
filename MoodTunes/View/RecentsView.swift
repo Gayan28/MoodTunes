@@ -1,13 +1,13 @@
 //
-//  PlaylistsView.swift
+//  RecentsView.swift
 //  MoodTunes
 //
-//  Created by Gayan Kavinda on 2025-04-07.
+//  Created by Gayan Kavinda on 2025-04-03.
 //
 
 import SwiftUI
 
-struct PlaylistsView: View {
+struct RecentsView: View {
     var body: some View {
         ZStack {
             Text("Mood Selection")
@@ -17,8 +17,8 @@ struct PlaylistsView: View {
     }
 }
 
-struct PlaylistsView_Previews: PreviewProvider {
+struct RecentsView_Previews: PreviewProvider {
     static var previews: some View {
-        PlaylistsView()
+        RecentsView()
     }
 }

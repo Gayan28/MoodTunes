@@ -19,7 +19,7 @@ struct HomeView: View {
                 case .moods:
                     MoodSelectionView(selectedTab: $selectedTab) 
                 case .map:
-                    MapView()
+                    MapView(selectedTab: $selectedTab)
                 case .playing:
                     NowPlayingView()
                 case .settings:
