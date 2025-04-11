@@ -9,14 +9,14 @@ import SwiftUI
 
 struct AllSongsView: View {
     let categories = [
-        ("Happy Songs", "bg1"),
-        ("Sad Songs", "bg2"),
-        ("Angry Songs", "bg3"),
-        ("Relax Songs", "bg4")
+        ("Happy Songs", "happysongs"),
+        ("Sad Songs", "sadsongs"),
+        ("Angry Songs", "angrysongs"),
+        ("Relax Songs", "relaxsongs")
     ]
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: 15) {
             Text("Let’s Discover")
                 .font(.title)
                 .fontWeight(.bold)
@@ -46,7 +46,7 @@ struct AllSongsView: View {
                     }
                 }
             }
-            .padding(.top, 10)
+            .padding(.top, 20)
             
             Spacer()
         }

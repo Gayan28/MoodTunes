@@ -44,3 +44,4 @@ struct EventDetailsView: View {
         }
     }
 }
+

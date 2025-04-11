@@ -10,25 +10,22 @@ import SwiftUI
 
 struct NowPlayingView: View {
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Happy Songs")
-                .foregroundColor(.gray)
-                .font(.subheadline)
+        VStack(spacing: 30) {
             
             Text("PLAYING FROM PLAYLIST")
                 .foregroundColor(.white)
-                .font(.caption)
+                .font(.headline)
                 .padding(.bottom, 10)
             
-            Image("naiyo") // Replace with your actual image asset name
+            Image("playingImg")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 300, height: 300)
-                .cornerRadius(10)
+                .frame(width: 320, height: 320)
+                .cornerRadius(12)
             
             Text("Naiyo Lagda")
                 .foregroundColor(.white)
-                .font(.title2)
+                .font(.title)
                 .fontWeight(.semibold)
             
             Text("Arijit Singh")
