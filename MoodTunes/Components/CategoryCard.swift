@@ -34,7 +34,7 @@ struct CategoryCard2: View {
 
 struct CategoryCard_Previews: PreviewProvider {
     static var previews: some View {
-        CategoryCard2(imageURL: "https://www.google.com/url?sa=i&url=https%3A%2F%2Flk.bookmyshow.com%2Fyears%2F2023%2Fevents%2F3&psig=AOvVaw14Xh0Jb_oQCRpBsBPfhAAG&ust=1744314174721000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCJCJrOray4wDFQAAAAAdAAAAABAE", title: "Concert")
+        CategoryCard2(imageURL: "https://example.com/image.jpg", title: "Concert")
             .background(Color.black)
     }
 }

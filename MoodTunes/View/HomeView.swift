@@ -11,29 +11,34 @@ struct HomeView: View {
     @State private var selectedTab: TabItem = .home
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            Group {
-                switch selectedTab {
-                case .home:
-                    DashboardView(selectedTab: $selectedTab)
-                case .moods:
-                    MoodSelectionView(selectedTab: $selectedTab) 
-                case .map:
-                    MapView(selectedTab: $selectedTab)
-                case .playing:
-                    NowPlayingView()
-                case .settings:
-                    SettingsView(selectedTab: $selectedTab)
+        NavigationView {
+            ZStack(alignment: .bottom) {
+                Group {
+                    switch selectedTab {
+                    case .home:
+                        DashboardView(selectedTab: $selectedTab)
+                    case .moods:
+                        MoodSelectionView(selectedTab: $selectedTab)
+                    case .map:
+                        MapView()
+                    case .playing:
+                        NowPlayingView()
+                    case .settings:
+                        SettingsView(selectedTab: $selectedTab)
+                    }
                 }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(hex: "#0F0817"))
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color(hex: "#0F0817"))
+                .ignoresSafeArea(.keyboard)
 
-            CustomTabBar(selectedTab: $selectedTab)
-                .frame(height: 70)
-                .frame(maxWidth: .infinity)
-                .background(Color.black.opacity(0.9))
-                .edgesIgnoringSafeArea(.bottom)
+                CustomTabBar(selectedTab: $selectedTab)
+                    .frame(height: 70)
+                    .frame(maxWidth: .infinity)
+                    .background(Color.black.opacity(0.9))
+            }
+            .edgesIgnoringSafeArea(.bottom)
+            .navigationBarTitle("")
+            .navigationBarHidden(true)
         }
     }
 }
@@ -42,61 +47,58 @@ struct DashboardView: View {
     @Binding var selectedTab: TabItem
 
     var body: some View {
-        VStack(alignment: .leading) {
-            Spacer()
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
 
-            // Greeting
-            Text("Hello Gayan,")
-                .font(.system(size: 28, weight: .bold))
-                .foregroundColor(.white)
+                // Greeting
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("Hello Gayan,")
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundColor(.white)
 
-            Text("How Was Your Day?")
-                .font(.system(size: 28, weight: .bold))
-                .foregroundColor(.white)
-
-            // Daily Mood Card
-            HStack {
-                Spacer()
-                ZStack(alignment: .bottomLeading) {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.blue)
-                        .frame(width: 350, height: 410)
-                        .overlay(
-                            Image("dashboard1")
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 350, height: 410)
-                                .clipped()
-                                .cornerRadius(12)
-                        )
+                    Text("How Was Your Day?")
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundColor(.white)
                 }
-                Spacer()
+
+                // Daily Mood Card
+                HStack {
+                    Spacer()
+                    ZStack(alignment: .bottomLeading) {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.blue)
+                            .frame(width: 350, height: 440)
+                            .overlay(
+                                Image("dashboard1")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 350, height: 440)
+                                    .clipped()
+                                    .cornerRadius(12)
+                            )
+                    }
+                    Spacer()
+                }
+
+                // Music Categories Section
+                HStack(spacing: 20) {
+                    NavigationLink(destination: FavouritesView()) {
+                        CategoryCard(title: "Favourites", imageName: "Image 1")
+                    }
+                    NavigationLink(destination: AllSongsView()) {
+                        CategoryCard(title: "Playlists", imageName: "Image 2")
+                    }
+                    NavigationLink(destination: RecentsView()) {
+                        CategoryCard(title: "Recents", imageName: "Image 3")
+                    }
+                }
             }
-            .padding(.vertical)
-
-            Spacer().frame(height: 20)
-
-            // Music Categories Section with images
-            HStack(spacing: 20) {
-                NavigationLink(destination: FavouritesView()) {
-                    CategoryCard(title: "Favourites", imageName: "Image 1")
-                }
-                NavigationLink(destination: PlaylistsView()) {
-                    CategoryCard(title: "Playlists", imageName: "Image 2")
-                }
-                NavigationLink(destination: RecentsView()) {
-                    CategoryCard(title: "Recents", imageName: "Image 3")
-                }
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.bottom, 30)
-
-            Spacer()
+            .padding(.horizontal, 20)
+            .padding(.top, 30)
+            .padding(.bottom, 100) // To not overlap with tab bar
         }
-        .padding(.horizontal, 20)
-        .padding(.bottom, 70)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(hex: "#0F0817"))
+        .edgesIgnoringSafeArea(.bottom)
     }
 }
 
@@ -139,7 +141,7 @@ extension Color {
         Scanner(string: hex).scanHexInt64(&int)
         let r, g, b: UInt64
         switch hex.count {
-        case 6: // RGB
+        case 6:
             (r, g, b) = ((int >> 16) & 0xFF, (int >> 8) & 0xFF, int & 0xFF)
         default:
             (r, g, b) = (0, 0, 0)

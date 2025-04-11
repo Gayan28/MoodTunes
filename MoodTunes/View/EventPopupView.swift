@@ -29,7 +29,7 @@ struct EventPopupView: View {
                 .onTapGesture {
                     onTapDetails()
                 }
-            
+
             Text(event.name)
                 .font(.subheadline)
                 .fontWeight(.semibold)

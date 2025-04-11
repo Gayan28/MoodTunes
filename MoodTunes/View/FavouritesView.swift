@@ -8,17 +8,16 @@
 import SwiftUI
 
 struct FavouritesView: View {
+    let songs: [Song] = [/* your favourite songs here */]
+
     var body: some View {
-        ZStack {
-            Text("Mood Selection")
-                .font(.title)
-                .foregroundColor(.white)
-        }
+        SongListView(
+            title: "Favourites",
+            subtitle: "All Favourites songs!",
+            backgroundImage: "favouriteImg",
+            songs: songs
+        )
     }
 }
 
-struct FavouriteView_Previews: PreviewProvider {
-    static var previews: some View {
-        FavouritesView()
-    }
-}
+

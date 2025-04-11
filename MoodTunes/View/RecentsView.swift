@@ -8,17 +8,14 @@
 import SwiftUI
 
 struct RecentsView: View {
-    var body: some View {
-        ZStack {
-            Text("Mood Selection")
-                .font(.title)
-                .foregroundColor(.white)
-        }
-    }
-}
+    let songs: [Song] = [/* your recent songs here */]
 
-struct RecentsView_Previews: PreviewProvider {
-    static var previews: some View {
-        RecentsView()
+    var body: some View {
+        SongListView(
+            title: "Recents",
+            subtitle: "All Recent played songs!",
+            backgroundImage: "RecentsImg",
+            songs: songs
+        )
     }
 }

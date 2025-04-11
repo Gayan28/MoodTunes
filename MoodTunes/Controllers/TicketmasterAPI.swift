@@ -43,7 +43,7 @@ class TicketmasterAPI {
 
             do {
                 let decoded = try JSONDecoder().decode(TicketmasterResponse.self, from: data)
-                
+
                 let events = decoded.embedded.events.compactMap { event -> Event? in
                     guard
                         let name = event.name,
@@ -76,4 +76,4 @@ class TicketmasterAPI {
             }
         }.resume()
     }
-}
+} 

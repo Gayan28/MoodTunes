@@ -13,60 +13,34 @@ struct EventDetailsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 20) {
+            VStack(alignment: .leading, spacing: 16) {
                 AsyncImage(url: URL(string: event.imageURL)) { image in
                     image
                         .resizable()
-                        .scaledToFill()
+                        .scaledToFit()
                 } placeholder: {
                     Color.gray
                 }
-                .frame(height: 250)
-                .cornerRadius(16)
+                .frame(height: 200)
+                .cornerRadius(12)
 
                 Text(event.name)
                     .font(.title)
                     .fontWeight(.bold)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
-                
+
                 Text(event.info)
                     .font(.body)
-                    .padding()
 
-                // Directions Button
-                Button(action: {
-                    openMaps()
-                }) {
-                    HStack {
-                        Image(systemName: "location.circle.fill")
-                        Text("Get Directions")
-                            .fontWeight(.semibold)
-                    }
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(12)
+                Map(coordinateRegion: .constant(MKCoordinateRegion(
+                    center: event.coordinate,
+                    span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                )), annotationItems: [event]) { event in
+                    MapMarker(coordinate: event.coordinate, tint: .blue)
                 }
-                .padding(.horizontal)
-
-                Spacer()
+                .frame(height: 200)
+                .cornerRadius(12)
             }
-            .padding(.top)
+            .padding()
         }
-        .navigationTitle("Event Details")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-
-    // Open Apple Maps with event location
-    private func openMaps() {
-        let coordinate = event.coordinate
-        let placemark = MKPlacemark(coordinate: coordinate)
-        let mapItem = MKMapItem(placemark: placemark)
-        mapItem.name = event.name
-        mapItem.openInMaps(launchOptions: [
-            MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
-        ])
     }
 }
