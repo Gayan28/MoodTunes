@@ -95,7 +95,7 @@ struct DashboardView: View {
             }
             .padding(.horizontal, 20)
             .padding(.top, 30)
-            .padding(.bottom, 100) // To not overlap with tab bar
+            .padding(.bottom, 100) 
         }
         .background(Color(hex: "#0F0817"))
         .edgesIgnoringSafeArea(.bottom)
