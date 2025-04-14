@@ -15,11 +15,13 @@ struct CustomTabBar: View {
             TabBarButton(icon: "play.circle", title: "Playing", tab: .playing, selectedTab: $selectedTab)
             TabBarButton(icon: "gearshape", title: "Settings", tab: .settings, selectedTab: $selectedTab)
         }
-        .padding(.top, 10)
-        .frame(height: 70)
+        .padding(.top, 12)
+        .padding(.bottom, 20)
+        .padding(.horizontal, 5)
         .frame(maxWidth: .infinity)
-        .background(Color.black.opacity(0.8))
-        .cornerRadius(0) 
+        .background(Color.black.opacity(0.85))
+        .cornerRadius(20)
+        .shadow(color: .black.opacity(0.3), radius: 10, x: 0, y: -5)
     }
 }
 
