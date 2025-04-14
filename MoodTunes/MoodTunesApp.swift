@@ -6,15 +6,18 @@
 //
 
 import SwiftUI
+import Firebase
 
-@main
-struct MoodTunesApp: App {
-    let persistenceController = PersistenceController.shared
+@main struct MoodTunesApp: App { @StateObject var authVM = AuthViewModel()
 
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
-        }
+init() {
+    FirebaseApp.configure()
+}
+
+var body: some Scene {
+    WindowGroup {
+        ContentView()
+            .environmentObject(authVM)
     }
+}
 }

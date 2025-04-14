@@ -41,7 +41,7 @@ struct SplashScreen: View {
                 
                 // Buttons with spacing
                 VStack(spacing: 30) {
-                    NavigationLink(destination: LoginView()) {
+                    NavigationLink(destination: AuthView()) {
                         Text("Sign In")
                             .frame(maxWidth: .infinity)
                             .frame(height: 50)
@@ -51,7 +51,7 @@ struct SplashScreen: View {
                     }
                     .padding(.horizontal, 40)
                     
-                    NavigationLink(destination: RegisterView()) {
+                    NavigationLink(destination: AuthView()) {
                         Text("Sign Up")
                             .frame(maxWidth: .infinity)
                             .frame(height: 50)

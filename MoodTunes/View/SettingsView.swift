@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import FirebaseAuth
+import FirebaseFirestore
 
 struct SettingsView: View {
     @Binding var selectedTab: TabItem
@@ -13,84 +15,134 @@ struct SettingsView: View {
     @State private var appearance = "Light"
     @State private var notificationsEnabled = true
 
-    // Registered User Info
-    let username = "gayan_k"
-    let fullName = "Gayan Kavinda"
-    let email = "gayan@example.com"
+    @State private var fullName = "Loading..."
+    @State private var email = "Loading..."
 
     var body: some View {
         NavigationView {
             ZStack(alignment: .bottom) {
-                List {
-                    //Profile Section
-                    Section(header: Text("Profile")) {
-                        HStack {
-                            Label("Username", systemImage: "person.circle")
-                            Spacer()
-                            Text(username)
-                                .foregroundColor(.secondary)
+                Color(hex: "#0F0817") // background color
+                    .ignoresSafeArea()
+
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("My Account")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .padding(.horizontal)
+                        .padding(.top)
+
+                    List {
+                        Section(header: Text("Profile").foregroundColor(.white)) {
+                            HStack {
+                                Label("Full Name", systemImage: "person.fill")
+                                Spacer()
+                                Text(fullName)
+                                    .foregroundColor(.secondary)
+                            }
+                            .listRowBackground(Color(hex: "#EBEDF0"))
+
+                            HStack {
+                                Label("Email", systemImage: "envelope")
+                                Spacer()
+                                Text(email)
+                                    .foregroundColor(.secondary)
+                            }
+                            .listRowBackground(Color(hex: "#EBEDF0"))
+
+                            Button(role: .destructive) {
+                                deleteAccount()
+                            } label: {
+                                Label("Delete Account", systemImage: "trash")
+                                    .foregroundColor(.red)
+                            }
+                            .listRowBackground(Color(hex: "#EBEDF0"))
                         }
 
-                        HStack {
-                            Label("Full Name", systemImage: "person.fill")
-                            Spacer()
-                            Text(fullName)
-                                .foregroundColor(.secondary)
-                        }
+                        Section(header: Text("App Settings").foregroundColor(.white)) {
+                            Toggle(isOn: $isOfflineMode) {
+                                Label("Offline Mode", systemImage: "wifi.slash")
+                            }
+                            .listRowBackground(Color(hex: "#EBEDF0"))
 
-                        HStack {
-                            Label("Email", systemImage: "envelope")
-                            Spacer()
-                            Text(email)
-                                .foregroundColor(.secondary)
-                        }
+                            Picker(selection: $appearance, label: Label("Appearance", systemImage: "paintbrush")) {
+                                Text("Light").tag("Light")
+                                Text("Dark").tag("Dark")
+                            }
+                            .pickerStyle(SegmentedPickerStyle())
+                            .listRowBackground(Color(hex: "#EBEDF0"))
 
-                        // Delete Account Button
-                        Button(role: .destructive) {
-                            // Add delete logic here
-                        } label: {
-                            Label("Delete Account", systemImage: "trash")
-                                .foregroundColor(.red)
+                            Toggle(isOn: $notificationsEnabled) {
+                                Label("Notifications", systemImage: "bell.fill")
+                            }
+                            .listRowBackground(Color(hex: "#EBEDF0"))
+
+                            Button(action: logout) {
+                                Label("Logout", systemImage: "arrow.right.square")
+                                    .foregroundColor(.red)
+                            }
+                            .listRowBackground(Color(hex: "#EBEDF0"))
                         }
                     }
-
-                    // MARK: - Settings Section
-                    Section(header: Text("App Settings")) {
-                        Toggle(isOn: $isOfflineMode) {
-                            Label("Offline Mode", systemImage: "wifi.slash")
-                        }
-
-                        Picker(selection: $appearance, label: Label("Appearance", systemImage: "paintbrush")) {
-                            Text("Light").tag("Light")
-                            Text("Dark").tag("Dark")
-                        }
-                        .pickerStyle(SegmentedPickerStyle())
-
-                        Toggle(isOn: $notificationsEnabled) {
-                            Label("Notifications", systemImage: "bell.fill")
-                        }
-
-                        Button {
-                            // Add logout logic here
-                        } label: {
-                            Label("Logout", systemImage: "arrow.right.square")
-                                .foregroundColor(.blue)
-                        }
-                    }
+                    .scrollContentBackground(.hidden)
+                    .background(Color(hex: "#0F0817")) // list background
+                    .listStyle(InsetGroupedListStyle())
+                    .padding(.bottom, 70)
                 }
-                .listStyle(InsetGroupedListStyle())
-                .padding(.bottom, 70) // Space for tab bar
-                .navigationTitle("My Account")
 
-                // Custom Tab Bar
                 CustomTabBar(selectedTab: $selectedTab)
                     .frame(height: 70)
                     .frame(maxWidth: .infinity)
                     .background(Color.black.opacity(0.9))
                     .edgesIgnoringSafeArea(.bottom)
             }
-            .background(Color(hex: "#0F0817"))
-            .edgesIgnoringSafeArea(.bottom)
+            .onAppear(perform: fetchUserData)
+        }
+    }
+
+    private func fetchUserData() {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            fullName = "Not logged in"
+            email = "Not logged in"
+            return
+        }
+
+        let db = Firestore.firestore()
+        let userRef = db.collection("users").document(uid)
+
+        userRef.getDocument { document, error in
+            if let error = error {
+                print("Error fetching user data: \(error.localizedDescription)")
+                fullName = "Error"
+                email = "Error"
+                return
+            }
+
+            guard let document = document, document.exists,
+                  let data = document.data() else {
+                fullName = "No data"
+                email = "No data"
+                return
+            }
+
+            fullName = data["fullName"] as? String ?? "No Name"
+            email = data["email"] as? String ?? "No Email"
+        }
+    }
+
+    private func logout() {
+        try? Auth.auth().signOut()
+    }
+
+    private func deleteAccount() {
+        guard let user = Auth.auth().currentUser else { return }
+
+        user.delete { error in
+            if let error = error {
+                print("Delete error: \(error.localizedDescription)")
+            } else {
+                print("Account deleted.")
+            }
         }
     }
 }

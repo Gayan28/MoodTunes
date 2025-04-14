@@ -6,6 +6,16 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		AF583F072DAA721000E7E764 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = AF583F062DAA721000E7E764 /* Algorithms */; };
+		AF583F9A2DABB78800E7E764 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = AF583F992DABB78800E7E764 /* FirebaseAnalytics */; };
+		AF583F9C2DABB78800E7E764 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = AF583F9B2DABB78800E7E764 /* FirebaseAuth */; };
+		AF583F9E2DABB78800E7E764 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = AF583F9D2DABB78800E7E764 /* FirebaseCore */; };
+		AF583FA02DABB78800E7E764 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = AF583F9F2DABB78800E7E764 /* FirebaseFirestore */; };
+		AF583FA22DABB78800E7E764 /* FirebaseFunctions in Frameworks */ = {isa = PBXBuildFile; productRef = AF583FA12DABB78800E7E764 /* FirebaseFunctions */; };
+		AF583FA42DABB78800E7E764 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = AF583FA32DABB78800E7E764 /* FirebaseStorage */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		AFD8C3C72D9D895C00C59893 /* MoodTunes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MoodTunes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +33,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AF583F9A2DABB78800E7E764 /* FirebaseAnalytics in Frameworks */,
+				AF583F9C2DABB78800E7E764 /* FirebaseAuth in Frameworks */,
+				AF583F9E2DABB78800E7E764 /* FirebaseCore in Frameworks */,
+				AF583FA22DABB78800E7E764 /* FirebaseFunctions in Frameworks */,
+				AF583FA42DABB78800E7E764 /* FirebaseStorage in Frameworks */,
+				AF583FA02DABB78800E7E764 /* FirebaseFirestore in Frameworks */,
+				AF583F072DAA721000E7E764 /* Algorithms in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +82,13 @@
 			);
 			name = MoodTunes;
 			packageProductDependencies = (
+				AF583F062DAA721000E7E764 /* Algorithms */,
+				AF583F992DABB78800E7E764 /* FirebaseAnalytics */,
+				AF583F9B2DABB78800E7E764 /* FirebaseAuth */,
+				AF583F9D2DABB78800E7E764 /* FirebaseCore */,
+				AF583F9F2DABB78800E7E764 /* FirebaseFirestore */,
+				AF583FA12DABB78800E7E764 /* FirebaseFunctions */,
+				AF583FA32DABB78800E7E764 /* FirebaseStorage */,
 			);
 			productName = MoodTunes;
 			productReference = AFD8C3C72D9D895C00C59893 /* MoodTunes.app */;
@@ -94,6 +118,10 @@
 			);
 			mainGroup = AFD8C3BE2D9D895C00C59893;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				AF583F052DAA721000E7E764 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
+				AF583F982DABB78800E7E764 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = AFD8C3C82D9D895C00C59893 /* Products */;
 			projectDirPath = "";
@@ -322,6 +350,63 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		AF583F052DAA721000E7E764 /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.1;
+			};
+		};
+		AF583F982DABB78800E7E764 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.11.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AF583F062DAA721000E7E764 /* Algorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AF583F052DAA721000E7E764 /* XCRemoteSwiftPackageReference "swift-algorithms" */;
+			productName = Algorithms;
+		};
+		AF583F992DABB78800E7E764 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AF583F982DABB78800E7E764 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		AF583F9B2DABB78800E7E764 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AF583F982DABB78800E7E764 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		AF583F9D2DABB78800E7E764 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AF583F982DABB78800E7E764 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		AF583F9F2DABB78800E7E764 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AF583F982DABB78800E7E764 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		AF583FA12DABB78800E7E764 /* FirebaseFunctions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AF583F982DABB78800E7E764 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFunctions;
+		};
+		AF583FA32DABB78800E7E764 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AF583F982DABB78800E7E764 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = AFD8C3BF2D9D895C00C59893 /* Project object */;
 }
