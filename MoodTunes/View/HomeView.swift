@@ -18,13 +18,13 @@ struct HomeView: View {
                     case .home:
                         DashboardView(selectedTab: $selectedTab)
                     case .moods:
-                        MoodSelectionView(selectedTab: $selectedTab)
+                        MoodSelectionView()
                     case .map:
                         MapView()
                     case .playing:
                         NowPlayingView()
                     case .settings:
-                        SettingsView(selectedTab: $selectedTab)
+                        SettingsView()
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -95,7 +95,7 @@ struct DashboardView: View {
             }
             .padding(.horizontal, 20)
             .padding(.top, 30)
-            .padding(.bottom, 100) 
+            .padding(.bottom, 100)
         }
         .background(Color(hex: "#0F0817"))
         .edgesIgnoringSafeArea(.bottom)
