@@ -7,37 +7,29 @@
 
 import SwiftUI
 import MapKit
-
-struct EventLocation: Identifiable {
-    let id = UUID()
-    let name: String
-    let coordinate: CLLocationCoordinate2D
-    let color: Color
-}
-
-struct EventPoster: Identifiable {
-    let id = UUID()
-    let imageName: String
-    let title: String
-}
+import Firebase
 
 struct MapView: View {
+    @StateObject private var firestoreService = FirestoreService()
     @State private var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 6.9050, longitude: 79.9520),
         span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
     )
     
-    let eventLocations: [EventLocation] = [
-        EventLocation(name: "Yuganthaya", coordinate: CLLocationCoordinate2D(latitude: 6.9000, longitude: 79.9600), color: .yellow),
-        EventLocation(name: "Sangeethe", coordinate: CLLocationCoordinate2D(latitude: 6.8700, longitude: 79.9400), color: .red),
-        EventLocation(name: "Daddy Live", coordinate: CLLocationCoordinate2D(latitude: 6.8800, longitude: 80.0100), color: .red)
-    ]
-    
-    let posters: [EventPoster] = [
-        EventPoster(imageName: "concert", title: "Sihinaye"),
-        EventPoster(imageName: "concert", title: "Aluth Kalawak"),
-        EventPoster(imageName: "concert", title: "Wayo Live")
-    ]
+    @State private var selectedEvent: Event? = nil
+    @State private var showPopup = false
+    @State private var navigateToDetails = false
+    @State private var searchText: String = ""
+
+    var filteredEvents: [Event] {
+        if searchText.isEmpty {
+            return firestoreService.events
+        } else {
+            return firestoreService.events.filter {
+                $0.name.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
     
     var body: some View {
         NavigationStack {
@@ -45,18 +37,29 @@ struct MapView: View {
                 
                 // MAP + SEARCH
                 ZStack(alignment: .top) {
-                    Map(coordinateRegion: $region, annotationItems: eventLocations) { location in
-                        MapAnnotation(coordinate: location.coordinate) {
-                            VStack {
-                                Image(systemName: "mappin.circle.fill")
-                                    .font(.title)
-                                    .foregroundColor(location.color)
-                                Text(location.name)
-                                    .font(.caption)
-                                    .foregroundColor(.black)
-                                    .padding(2)
-                                    .background(Color.white.opacity(0.75))
-                                    .cornerRadius(4)
+                    Map(coordinateRegion: $region, annotationItems: filteredEvents) { event in
+                        MapAnnotation(coordinate: event.coordinate) {
+                            Button {
+                                selectedEvent = event
+                                showPopup = true
+                            } label: {
+                                VStack(spacing: 4) {
+                                    Image(systemName: "mappin.circle.fill")
+                                        .font(.system(size: 30))
+                                        .foregroundColor(.red)
+                                        .background(
+                                            Circle()
+                                                .fill(Color.white)
+                                                .frame(width: 36, height: 36)
+                                        )
+                                    
+                                    Text(event.name)
+                                        .font(.caption2)
+                                        .foregroundColor(.black)
+                                        .padding(4)
+                                        .background(Color.white.opacity(0.9))
+                                        .cornerRadius(6)
+                                }
                             }
                         }
                     }
@@ -67,13 +70,72 @@ struct MapView: View {
                     HStack {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(.gray)
-                        TextField("Search", text: .constant(""))
+                        TextField("Search", text: $searchText)
                             .foregroundColor(.primary)
+                            .onSubmit {
+                                showPopup = false
+                            }
                     }
                     .padding()
                     .background(Color.white)
                     .cornerRadius(12)
                     .padding()
+                    
+                    // POPUP VIEW
+                    if showPopup, let event = selectedEvent {
+                        VStack {
+                            Spacer()
+                            VStack(spacing: 8) {
+                                // Close button
+                                HStack {
+                                    Spacer()
+                                    Button(action: {
+                                        showPopup = false
+                                    }) {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundColor(.white)
+                                            .font(.title3)
+                                            .padding(.trailing, 4)
+                                    }
+                                }
+
+                                Image(event.imageName)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 130)
+                                    .cornerRadius(8)
+
+                                Text(event.name)
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                    .multilineTextAlignment(.center)
+
+                                NavigationLink(destination: EventDetailsView(event: event)
+                                    .onDisappear {
+                                        selectedEvent = nil
+                                        showPopup = false
+                                    }, isActive: $navigateToDetails) {
+                                    Button("More Details") {
+                                        showPopup = false
+                                        navigateToDetails = true
+                                    }
+                                    .font(.subheadline)
+                                    .foregroundColor(.blue)
+                                    .padding(.vertical, 6)
+                                    .padding(.horizontal, 14)
+                                    .background(Color.white)
+                                    .cornerRadius(8)
+                                }
+                            }
+                            .padding()
+                            .frame(maxWidth: UIScreen.main.bounds.width * 0.5)
+                            .background(Color.black.opacity(0.92))
+                            .cornerRadius(16)
+                            .padding(.bottom, 80)
+                        }
+                        .transition(.move(edge: .bottom))
+                        .animation(.easeInOut, value: showPopup)
+                    }
                 }
                 
                 // POSTER-STYLE UPCOMING EVENTS
@@ -84,33 +146,47 @@ struct MapView: View {
                         .padding(.horizontal)
                         .padding(.top, 10)
                     
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 16) {
-                            ForEach(posters) { event in
-                                NavigationLink(destination: EventDetailsView()) {
-                                    VStack(spacing: 6) {
-                                        Image(event.imageName)
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(width: 110, height: 140)
-                                            .clipped()
-                                            .cornerRadius(12)
-                                        
-                                        Text(event.title)
-                                            .font(.caption)
-                                            .foregroundColor(.white)
+                    if filteredEvents.isEmpty {
+                        Text("No results found.")
+                            .foregroundColor(.gray)
+                            .font(.caption)
+                            .padding(.horizontal)
+                            .padding(.vertical, 20)
+                    } else {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 16) {
+                                ForEach(filteredEvents) { event in
+                                    NavigationLink(destination: EventDetailsView(event: event)) {
+                                        VStack(spacing: 6) {
+                                            Image(event.imageName)
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(width: 110, height: 140)
+                                                .clipped()
+                                                .cornerRadius(12)
+                                            
+                                            Text(event.name)
+                                                .font(.caption)
+                                                .foregroundColor(.white)
+                                                .multilineTextAlignment(.center)
+                                                .frame(width: 110)
+                                        }
                                     }
                                 }
                             }
+                            .padding(.horizontal)
                         }
-                        .padding(.horizontal)
+                        .padding(.bottom, 12)
                     }
-                    .padding(.bottom, 12)
                 }
                 .background(Color.black)
-                .padding(.bottom, 70) // Padding for tab bar
+                .padding(.bottom, 70)
             }
             .background(Color.black.edgesIgnoringSafeArea(.bottom))
+            .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                firestoreService.fetchEvents()
+            }
         }
     }
 }
