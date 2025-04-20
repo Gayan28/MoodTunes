@@ -10,12 +10,20 @@ import FirebaseAuth
 import FirebaseFirestore
 
 struct SettingsView: View {
+    enum ActiveAlert {
+        case logout, deleteAccount, success
+    }
+
     @State private var isOfflineMode = false
     @State private var appearance = "Light"
     @State private var notificationsEnabled = true
 
     @State private var fullName = "Loading..."
     @State private var email = "Loading..."
+
+    @State private var showAlert = false
+    @State private var activeAlert: ActiveAlert?
+    @State private var successMessageText = ""
 
     var body: some View {
         NavigationView {
@@ -50,7 +58,8 @@ struct SettingsView: View {
                             .listRowBackground(Color(hex: "#EBEDF0"))
 
                             Button(role: .destructive) {
-                                deleteAccount()
+                                activeAlert = .deleteAccount
+                                showAlert = true
                             } label: {
                                 Label("Delete Account", systemImage: "trash")
                                     .foregroundColor(.red)
@@ -76,7 +85,10 @@ struct SettingsView: View {
                             }
                             .listRowBackground(Color(hex: "#EBEDF0"))
 
-                            Button(action: logout) {
+                            Button(action: {
+                                activeAlert = .logout
+                                showAlert = true
+                            }) {
                                 Label("Logout", systemImage: "arrow.right.square")
                                     .foregroundColor(.red)
                             }
@@ -89,6 +101,40 @@ struct SettingsView: View {
                 }
             }
             .onAppear(perform: fetchUserData)
+            .alert(isPresented: $showAlert) {
+                switch activeAlert {
+                case .logout:
+                    return Alert(
+                        title: Text("Are you sure you want to logout?"),
+                        primaryButton: .destructive(Text("Logout")) {
+                            logout()
+                        },
+                        secondaryButton: .cancel()
+                    )
+                case .deleteAccount:
+                    return Alert(
+                        title: Text("Are you sure you want to delete your account?"),
+                        message: Text("This action cannot be undone."),
+                        primaryButton: .destructive(Text("Delete")) {
+                            deleteAccount()
+                        },
+                        secondaryButton: .cancel()
+                    )
+                case .success:
+                    return Alert(
+                        title: Text(successMessageText),
+                        dismissButton: .default(Text("OK")) {
+                            if successMessageText.contains("successfully") {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                    exit(0)
+                                }
+                            }
+                        }
+                    )
+                case .none:
+                    return Alert(title: Text("Unknown error"))
+                }
+            }
         }
     }
 
@@ -123,17 +169,40 @@ struct SettingsView: View {
     }
 
     private func logout() {
-        try? Auth.auth().signOut()
+        do {
+            try Auth.auth().signOut()
+            fullName = "Logged Out"
+            email = "Logged Out"
+            successMessageText = "You have been logged out successfully."
+            activeAlert = .success
+            showAlert = true
+        } catch {
+            print("Logout failed: \(error.localizedDescription)")
+        }
     }
 
     private func deleteAccount() {
         guard let user = Auth.auth().currentUser else { return }
 
-        user.delete { error in
+        let db = Firestore.firestore()
+        let userRef = db.collection("users").document(user.uid)
+
+        userRef.delete { error in
             if let error = error {
-                print("Delete error: \(error.localizedDescription)")
-            } else {
-                print("Account deleted.")
+                print("Error deleting user data from Firestore: \(error.localizedDescription)")
+                return
+            }
+
+            user.delete { error in
+                if let error = error {
+                    print("Error deleting user account: \(error.localizedDescription)")
+                } else {
+                    fullName = "Deleted"
+                    email = "Deleted"
+                    successMessageText = "Account deleted successfully."
+                    activeAlert = .success
+                    showAlert = true
+                }
             }
         }
     }
