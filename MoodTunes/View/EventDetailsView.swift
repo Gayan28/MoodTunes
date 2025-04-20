@@ -6,13 +6,15 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct EventDetailsView: View {
     let event: Event
+    @StateObject private var locationManager = LocationManager()
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            
+
             Text("Concert Details")
                 .font(.headline)
                 .bold()
@@ -36,7 +38,7 @@ struct EventDetailsView: View {
                     .font(.title3)
                     .bold()
                     .foregroundColor(.white)
-                
+
                 Text(event.genre)
                     .foregroundColor(.gray)
                     .font(.subheadline)
@@ -74,7 +76,7 @@ struct EventDetailsView: View {
             Spacer()
 
             Button(action: {
-                // Navigate to directions
+                openGoogleMapsDirections()
             }) {
                 Text("Directions")
                     .font(.headline)
@@ -89,10 +91,28 @@ struct EventDetailsView: View {
         .background(Color.black.edgesIgnoringSafeArea(.all))
         .toolbar(.hidden, for: .tabBar)
     }
-}
 
-struct EventDetailsView_Previews: PreviewProvider {
-    static var previews: some View {
-        EventDetailsView()
+    func openGoogleMapsDirections() {
+        guard let currentLocation = locationManager.userLocation else {
+            print("Current location not available")
+            return
+        }
+
+        let sourceLat = currentLocation.latitude
+        let sourceLng = currentLocation.longitude
+        let destLat = event.coordinate.latitude
+        let destLng = event.coordinate.longitude
+
+        let googleMapsAppURL = "comgooglemaps://?saddr=\(sourceLat),\(sourceLng)&daddr=\(destLat),\(destLng)&directionsmode=driving"
+        let fallbackWebURL = "https://www.google.com/maps/dir/?api=1&origin=\(sourceLat),\(sourceLng)&destination=\(destLat),\(destLng)&travelmode=driving"
+
+        if let appURL = URL(string: googleMapsAppURL),
+           UIApplication.shared.canOpenURL(appURL) {
+            UIApplication.shared.open(appURL)
+        } else if let webURL = URL(string: fallbackWebURL) {
+            UIApplication.shared.open(webURL)
+        } else {
+            print("Cannot open Google Maps")
+        }
     }
 }

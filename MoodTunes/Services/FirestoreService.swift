@@ -1,10 +1,3 @@
-//
-//  FirestoreService.swift
-//  MoodTunes
-//
-//  Created by Gayan Kavinda on 2025-04-17.
-//
-
 import Foundation
 import FirebaseFirestore
 
@@ -20,10 +13,20 @@ class FirestoreService: ObservableObject {
                 return
             }
 
-            guard let documents = snapshot?.documents else { return }
-            self.events = documents.compactMap { doc in
-                Event(id: doc.documentID, data: doc.data())
+            guard let documents = snapshot?.documents else {
+                print("No concert documents found")
+                return
             }
+
+            self.events = documents.compactMap { doc in
+                let event = Event(id: doc.documentID, data: doc.data())
+                if event == nil {
+                    print("Skipping invalid document: \(doc.documentID)")
+                }
+                return event
+            }
+
+            print("Fetched \(self.events.count) events.")
         }
     }
 }

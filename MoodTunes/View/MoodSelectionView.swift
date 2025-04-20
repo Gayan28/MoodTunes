@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct MoodSelectionView: View {
-    @Binding var selectedTab: TabItem
     @State private var isNavigatingToDetector = false
 
     let columns = [
@@ -18,55 +17,43 @@ struct MoodSelectionView: View {
 
     var body: some View {
         NavigationView {
-            ZStack(alignment: .bottom) {
-                VStack(alignment: .leading, spacing: 10) {
-                    Spacer().frame(height: 40)
+            VStack(alignment: .leading, spacing: 10) {
+                Spacer().frame(height: 40)
 
-                    // Title
-                    Text("Choose Your Mood")
-                        .font(.system(size: 28, weight: .bold))
-                        .foregroundColor(.white)
+                Text("Choose Your Mood")
+                    .font(.system(size: 28, weight: .bold))
+                    .foregroundColor(.white)
 
-                    Text("What is your mood today?")
-                        .font(.system(size: 20))
-                        .foregroundColor(.gray)
+                Text("What is your mood today?")
+                    .font(.system(size: 20))
+                    .foregroundColor(.gray)
 
-                    // Mood Grid
-                    LazyVGrid(columns: columns, spacing: 16) {
-                        MoodItem(imageName: "happymood", title: "Happy")
-                        MoodItem(imageName: "angrymood", title: "Angry")
-                        MoodItem(imageName: "sadmood", title: "Sad")
-                        MoodItem(imageName: "relaxmood", title: "Relax")
-                    }
-
-                    // Auto Detect Button
-                    NavigationLink(destination: MoodDetectorView(), isActive: $isNavigatingToDetector) {
-                        Button(action: {
-                            isNavigatingToDetector = true
-                        }) {
-                            Text("Auto - Detect")
-                                .fontWeight(.bold)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(Color.blue)
-                                .foregroundColor(.white)
-                                .cornerRadius(12)
-                        }
-                    }
-                    .padding(.top, 40)
-
-                    Spacer()
+                LazyVGrid(columns: columns, spacing: 16) {
+                    MoodItem(imageName: "happymood", title: "Happy")
+                    MoodItem(imageName: "angrymood", title: "Angry")
+                    MoodItem(imageName: "sadmood", title: "Sad")
+                    MoodItem(imageName: "relaxmood", title: "Relax")
                 }
-                .padding(.horizontal, 20)
-                .padding(.bottom, 90)
 
-                // Custom Tab Bar
-                CustomTabBar(selectedTab: $selectedTab)
-                    .frame(height: 70)
-                    .frame(maxWidth: .infinity)
-                    .background(Color.black.opacity(0.9))
-                    .edgesIgnoringSafeArea(.bottom)
+                NavigationLink(destination: MoodDetectorView(), isActive: $isNavigatingToDetector) {
+                    Button(action: {
+                        isNavigatingToDetector = true
+                    }) {
+                        Text("Auto - Detect")
+                            .fontWeight(.bold)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(12)
+                    }
+                }
+                .padding(.top, 40)
+
+                Spacer()
             }
+            .padding(.horizontal, 20)
+            .padding(.bottom, 20)
             .background(Color(hex: "#0F0817"))
             .edgesIgnoringSafeArea(.bottom)
             .navigationBarHidden(true)
@@ -96,6 +83,6 @@ struct MoodItem: View {
 
 struct MoodSelectionView_Previews: PreviewProvider {
     static var previews: some View {
-        MoodSelectionView(selectedTab: .constant(.moods))
+        MoodSelectionView()
     }
 }

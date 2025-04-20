@@ -10,7 +10,6 @@ import FirebaseAuth
 import FirebaseFirestore
 
 struct SettingsView: View {
-    @Binding var selectedTab: TabItem
     @State private var isOfflineMode = false
     @State private var appearance = "Light"
     @State private var notificationsEnabled = true
@@ -20,8 +19,8 @@ struct SettingsView: View {
 
     var body: some View {
         NavigationView {
-            ZStack(alignment: .bottom) {
-                Color(hex: "#0F0817") // background color
+            ZStack {
+                Color(hex: "#0F0817")
                     .ignoresSafeArea()
 
                 VStack(alignment: .leading, spacing: 10) {
@@ -85,16 +84,9 @@ struct SettingsView: View {
                         }
                     }
                     .scrollContentBackground(.hidden)
-                    .background(Color(hex: "#0F0817")) // list background
+                    .background(Color(hex: "#0F0817"))
                     .listStyle(InsetGroupedListStyle())
-                    .padding(.bottom, 70)
                 }
-
-                CustomTabBar(selectedTab: $selectedTab)
-                    .frame(height: 70)
-                    .frame(maxWidth: .infinity)
-                    .background(Color.black.opacity(0.9))
-                    .edgesIgnoringSafeArea(.bottom)
             }
             .onAppear(perform: fetchUserData)
         }
@@ -149,6 +141,6 @@ struct SettingsView: View {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView(selectedTab: .constant(.settings))
+        SettingsView()
     }
 }

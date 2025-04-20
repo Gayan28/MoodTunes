@@ -8,16 +8,20 @@
 import SwiftUI
 import Firebase
 
-@main struct MoodTunesApp: App { @StateObject var authVM = AuthViewModel()
+@main
+struct MoodTunesApp: App {
+    @StateObject var authVM = AuthViewModel()
+    @StateObject var themeManager = ThemeManager()
 
-init() {
-    FirebaseApp.configure()
-}
-
-var body: some Scene {
-    WindowGroup {
-        ContentView()
-            .environmentObject(authVM)
+    init() {
+        FirebaseApp.configure()
     }
-}
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environmentObject(authVM)
+                .environmentObject(themeManager)
+        }
+    }
 }
