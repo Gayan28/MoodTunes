@@ -1,10 +1,3 @@
-//
-//  AllSongsView.swift
-//  MoodTunes
-//
-//  Created by Gayan Kavinda on 2025-04-03.
-//
-
 import SwiftUI
 
 struct AllSongsView: View {
@@ -20,16 +13,22 @@ struct AllSongsView: View {
             Text("Let’s Discover")
                 .font(.title)
                 .fontWeight(.bold)
-                .foregroundColor(.white)
+                .foregroundColor(.primary)
+                .dynamicTypeSize(.xSmall ... .accessibility3)
+                .minimumScaleFactor(0.8)
             
             Text("your next song to play!")
                 .font(.subheadline)
-                .foregroundColor(.gray)
+                .foregroundColor(.secondary)
+                .dynamicTypeSize(.xSmall ... .accessibility3)
+                .minimumScaleFactor(0.8)
             
             Text("All Categories")
                 .font(.headline)
-                .foregroundColor(.white)
+                .foregroundColor(.primary)
                 .padding(.top, 10)
+                .dynamicTypeSize(.xSmall ... .accessibility3)
+                .minimumScaleFactor(0.8)
             
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 25) {
                 ForEach(categories, id: \.0) { category in
@@ -41,8 +40,10 @@ struct AllSongsView: View {
                         
                         Text(category.0)
                             .font(.subheadline)
-                            .foregroundColor(.gray)
+                            .foregroundColor(.secondary)
                             .padding(.top, 5)
+                            .dynamicTypeSize(.xSmall ... .accessibility3)
+                            .minimumScaleFactor(0.8)
                     }
                 }
             }
@@ -51,12 +52,14 @@ struct AllSongsView: View {
             Spacer()
         }
         .padding()
-        .background(Color.black.edgesIgnoringSafeArea(.all))
+        .background(Color(UIColor.systemBackground).edgesIgnoringSafeArea(.all))
     }
 }
 
 struct AllSongsView_Previews: PreviewProvider {
     static var previews: some View {
         AllSongsView()
+            .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge) // Preview scaling
+            .preferredColorScheme(.dark) // Preview dark mode
     }
 }

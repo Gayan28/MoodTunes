@@ -21,11 +21,11 @@ struct MoodSelectionView: View {
                 Spacer().frame(height: 40)
 
                 Text("Choose Your Mood")
-                    .font(.system(size: 28, weight: .bold))
+                    .font(.title)
                     .foregroundColor(.white)
 
                 Text("What is your mood today?")
-                    .font(.system(size: 20))
+                    .font(.title2)
                     .foregroundColor(.gray)
 
                 LazyVGrid(columns: columns, spacing: 16) {

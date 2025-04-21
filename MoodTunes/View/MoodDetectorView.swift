@@ -1,4 +1,3 @@
-//
 //  MoodDetectorView.swift
 //  MoodTunes
 //
@@ -15,11 +14,11 @@ struct MoodDetectorView: View {
                 // Header
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Mood Detector")
-                        .font(.system(size: 28, weight: .bold))
+                        .font(.title)
                         .foregroundColor(.white)
 
                     Text("Let's check your mood!")
-                        .font(.system(size: 16))
+                        .font(.title3)
                         .foregroundColor(.gray)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -38,7 +37,7 @@ struct MoodDetectorView: View {
 
                 // Bottom Message
                 Text("Show your face to the camera to detect your mood")
-                    .font(.system(size: 20))
+                    .font(.title3)
                     .foregroundColor(.white)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 40)

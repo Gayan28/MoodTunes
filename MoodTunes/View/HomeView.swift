@@ -50,16 +50,19 @@ struct DashboardView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
 
-                // Greeting
-                VStack(alignment: .leading, spacing: 5) {
+                // Greeting Section
+                VStack(alignment: .leading, spacing: 4) {
                     Text("Hello Gayan,")
-                        .font(.system(size: 28, weight: .bold))
+                        .font(.largeTitle)
                         .foregroundColor(.white)
+                        .layoutPriority(1)
 
                     Text("How Was Your Day?")
-                        .font(.system(size: 28, weight: .bold))
+                        .font(.largeTitle)
                         .foregroundColor(.white)
+                        .layoutPriority(1)
                 }
+                .padding(.top, 20)
 
                 // Daily Mood Card
                 HStack {
@@ -92,9 +95,9 @@ struct DashboardView: View {
                         CategoryCard(title: "Recents", imageName: "Image 3")
                     }
                 }
+                .padding(.top, 20)
             }
             .padding(.horizontal, 20)
-            .padding(.top, 30)
             .padding(.bottom, 100)
         }
         .background(Color(hex: "#0F0817"))
@@ -133,7 +136,7 @@ struct HomeView_Previews: PreviewProvider {
     }
 }
 
-// Color Extension
+// MARK: - Color Extension
 extension Color {
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)

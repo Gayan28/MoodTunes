@@ -1,4 +1,3 @@
-//
 //  RecentsView.swift
 //  MoodTunes
 //
@@ -18,12 +17,12 @@ struct Song1: Identifiable {
 struct RecentsView: View {
     
     let songs: [Song1] = [
-        Song1(title: "You right", artist: "Doja Cat, The Weeknd", imageName: "song1", duration: nil),
-        Song1(title: "2 AM", artist: "Arizona Zervas", imageName: "song2", duration: nil),
-        Song1(title: "Baddest", artist: "2 Chainz, Chris Brown", imageName: "song3", duration: nil),
-        Song1(title: "True Love", artist: "Kanye West", imageName: "song4", duration: nil),
-        Song1(title: "Bye Bye", artist: "Marshmello, Juice WRLD", imageName: "song5", duration: nil),
-        Song1(title: "Hands on you", artist: "Austin George", imageName: "song6", duration: "3:56"),
+        Song1(title: "You Right", artist: "Doja Cat, The Weeknd", imageName: "song1", duration: "3:45"),
+        Song1(title: "2 AM", artist: "Arizona Zervas", imageName: "song2", duration: "2:53"),
+        Song1(title: "Baddest", artist: "2 Chainz, Chris Brown", imageName: "song3", duration: "3:20"),
+        Song1(title: "True Love", artist: "Kanye West", imageName: "song4", duration: "4:10"),
+        Song1(title: "Bye Bye", artist: "Marshmello, Juice WRLD", imageName: "song5", duration: "2:45"),
+        Song1(title: "Hands On You", artist: "Austin George", imageName: "song6", duration: "3:56"),
     ]
     
     var body: some View {
@@ -75,6 +74,7 @@ struct RecentsView: View {
                                     .foregroundColor(.gray)
                             }
                         }
+                        .padding(.vertical, 10)
                     }
                 }
                 .padding(.horizontal)

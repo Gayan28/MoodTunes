@@ -27,49 +27,52 @@ struct AuthView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 20) {
-                Spacer().frame(height: 30)
+            ScrollView {
+                VStack(spacing: 20) {
+                    Spacer().frame(height: 30)
 
-                Image("Logo")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 180, height: 120)
+                    Image("Logo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 180, height: 120)
 
-                Text("MOODTUNES")
-                    .font(.custom("Times New Roman", size: 24))
-                    .foregroundColor(.black)
-                    .kerning(2)
+                    Text("MOODTUNES")
+                        .font(.title)
+                        .bold()
+                        .kerning(2)
+                        .foregroundColor(.black)
 
-                Picker("Auth Type", selection: $selectedTab) {
-                    ForEach(AuthTab.allCases, id: \.self) { tab in
-                        Text(tab.rawValue).tag(tab)
+                    Picker("Auth Type", selection: $selectedTab) {
+                        ForEach(AuthTab.allCases, id: \.self) { tab in
+                            Text(tab.rawValue).tag(tab)
+                        }
                     }
+                    .pickerStyle(.segmented)
+                    .padding(.horizontal, 30)
+
+                    if selectedTab == .login {
+                        loginSection
+                    } else {
+                        registerSection
+                    }
+
+                    if isLoading {
+                        ProgressView()
+                            .padding(.top, 10)
+                    }
+
+                    if !errorMessage.isEmpty {
+                        Text(errorMessage)
+                            .foregroundColor(.red)
+                            .font(.caption)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+                    }
+
+                    Spacer()
                 }
-                .pickerStyle(.segmented)
                 .padding(.horizontal, 30)
-
-                if selectedTab == .login {
-                    loginSection
-                } else {
-                    registerSection
-                }
-
-                if isLoading {
-                    ProgressView()
-                        .padding(.top, 10)
-                }
-
-                if !errorMessage.isEmpty {
-                    Text(errorMessage)
-                        .foregroundColor(.red)
-                        .font(.caption)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
-                }
-
-                Spacer()
             }
-            .padding(.horizontal, 30)
             .ignoresSafeArea(.keyboard)
             .navigationDestination(isPresented: $registerNavigateToVerification) {
                 VerificationScreen()
@@ -87,8 +90,8 @@ struct AuthView: View {
 
             Button(action: loginUser) {
                 Text("Sign In")
+                    .font(.headline)
                     .foregroundColor(.white)
-                    .fontWeight(.bold)
                     .frame(maxWidth: .infinity)
                     .frame(height: 50)
                     .background(Color.blue)
@@ -97,17 +100,21 @@ struct AuthView: View {
 
             HStack {
                 Text("Forgot password?")
+                    .font(.footnote)
                     .foregroundColor(.black.opacity(0.7))
                 Button("Remember") {}
+                    .font(.footnote)
                     .foregroundColor(.blue)
             }
 
             HStack {
                 Text("Don’t have an account?")
+                    .font(.footnote)
                     .foregroundColor(.black.opacity(0.7))
                 Button("Register") {
                     selectedTab = .register
                 }
+                .font(.footnote)
                 .foregroundColor(.blue)
             }
         }
@@ -122,8 +129,8 @@ struct AuthView: View {
 
             Button(action: registerUser) {
                 Text("Sign Up")
+                    .font(.headline)
                     .foregroundColor(.white)
-                    .fontWeight(.bold)
                     .frame(maxWidth: .infinity)
                     .frame(height: 50)
                     .background(Color.blue)
@@ -132,10 +139,12 @@ struct AuthView: View {
 
             HStack {
                 Text("Already have an account?")
+                    .font(.footnote)
                     .foregroundColor(.black.opacity(0.7))
                 Button("Login") {
                     selectedTab = .login
                 }
+                .font(.footnote)
                 .foregroundColor(.blue)
             }
         }
@@ -213,5 +222,6 @@ struct AuthView: View {
 struct AuthView_Previews: PreviewProvider {
     static var previews: some View {
         AuthView()
+            .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge) // Test dynamic type
     }
 }

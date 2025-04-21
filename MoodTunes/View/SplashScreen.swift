@@ -21,43 +21,56 @@ struct SplashScreen: View {
                 
                 // Tagline
                 Text("MoodTunes – Let Your Emotions Play")
-                    .font(.system(size: 26, weight: .bold))
+                    .font(.title)
+                    .fontWeight(.bold)
                     .multilineTextAlignment(.center)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
+                    .dynamicTypeSize(.xSmall ... .accessibility3)
+                    .minimumScaleFactor(0.8)
+                    .padding(.horizontal, 20)
                 
                 // Description
                 HStack(alignment: .top, spacing: 5) {
                     Text("🎵")
-                        .font(.system(size: 20))
+                        .font(.title3)
+                    
                     Text("Personalized music based on your mood and activity. Relax, energize, or focus with the perfect soundtrack—automatically curated for you!")
+                        .font(.body)
                         .italic()
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.secondary)
+                        .dynamicTypeSize(.xSmall ... .accessibility3)
+                        .minimumScaleFactor(0.8)
                 }
-                .font(.system(size: 18, weight: .regular))
-                .multilineTextAlignment(.center)
-                .foregroundColor(.black)
                 .padding(.horizontal, 30)
                 
                 Spacer()
                 
-                // Buttons with spacing
+                // Buttons
                 VStack(spacing: 30) {
                     NavigationLink(destination: AuthView()) {
                         Text("Sign In")
+                            .font(.headline)
                             .frame(maxWidth: .infinity)
                             .frame(height: 50)
                             .background(Color.blue)
                             .foregroundColor(.white)
                             .cornerRadius(10)
+                            .dynamicTypeSize(.xSmall ... .accessibility3)
+                            .minimumScaleFactor(0.8)
                     }
                     .padding(.horizontal, 40)
                     
                     NavigationLink(destination: AuthView()) {
                         Text("Sign Up")
+                            .font(.headline)
                             .frame(maxWidth: .infinity)
                             .frame(height: 50)
                             .background(Color.blue)
                             .foregroundColor(.white)
                             .cornerRadius(10)
+                            .dynamicTypeSize(.xSmall ... .accessibility3)
+                            .minimumScaleFactor(0.8)
                     }
                     .padding(.horizontal, 40)
                 }
@@ -65,6 +78,7 @@ struct SplashScreen: View {
                 Spacer()
             }
             .padding()
+            .background(Color(UIColor.systemBackground).edgesIgnoringSafeArea(.all))
         }
     }
 }
@@ -72,5 +86,7 @@ struct SplashScreen: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         SplashScreen()
+            .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+            .preferredColorScheme(.dark)
     }
 }
