@@ -1,3 +1,4 @@
+//
 //  MapView.swift
 //  MoodTunes
 //
@@ -53,27 +54,21 @@ struct MapView: View {
     @EnvironmentObject var theme: ThemeManager
 
     var eventsWithCoordinates: [Event] {
-        let filtered = firestoreService.events.filter {
+        firestoreService.events.filter {
             $0.coordinate.latitude != 0 && $0.coordinate.longitude != 0
         }
-
-        // Debug print
-        print("Fetched \(firestoreService.events.count) events. Displaying \(filtered.count) on map.")
-        return filtered
     }
 
     var filteredEvents: [Event] {
-        if searchText.isEmpty {
-            return firestoreService.events
-        } else {
-            return firestoreService.events.filter {
+        searchText.isEmpty
+            ? firestoreService.events
+            : firestoreService.events.filter {
                 $0.name.localizedCaseInsensitiveContains(searchText)
             }
-        }
     }
 
     var combinedAnnotations: [MapItem] {
-        var items: [MapItem] = eventsWithCoordinates.map { MapItem.event($0) }
+        var items = eventsWithCoordinates.map { MapItem.event($0) }
         if let userAnnotation = locationManager.userLocationAnnotation().first {
             items.append(.user(userAnnotation))
         }
@@ -88,40 +83,38 @@ struct MapView: View {
                         showsUserLocation: true,
                         annotationItems: combinedAnnotations) { item in
                         MapAnnotation(coordinate: item.coordinate) {
-                            Group {
-                                switch item {
-                                case .event(let event):
-                                    Button {
-                                        selectedEvent = event
-                                        showPopup = true
-                                    } label: {
-                                        VStack(spacing: 4) {
-                                            Image(systemName: "mappin.circle.fill")
-                                                .font(.system(size: 30))
-                                                .foregroundColor(.red)
-                                                .background(Circle().fill(Color.white).frame(width: 36, height: 36))
-
-                                            Text(event.name)
-                                                .font(.caption2)
-                                                .foregroundColor(.black)
-                                                .padding(4)
-                                                .background(Color.white.opacity(0.9))
-                                                .cornerRadius(6)
-                                        }
+                            switch item {
+                            case .event(let event):
+                                Button {
+                                    selectedEvent = event
+                                    showPopup = true
+                                } label: {
+                                    VStack(spacing: 4) {
+                                        Image(systemName: "mappin.circle.fill")
+                                            .font(.system(size: 30))
+                                            .foregroundColor(.red)
+                                            .background(Circle().fill(Color.white).frame(width: 36, height: 36))
+                                        Text(event.name)
+                                            .font(.caption2)
+                                            .foregroundColor(.black)
+                                            .padding(4)
+                                            .background(Color.white.opacity(0.9))
+                                            .cornerRadius(6)
                                     }
-
-                                case .user:
-                                    Image(systemName: "location.circle.fill")
-                                        .font(.system(size: 30))
-                                        .foregroundColor(.blue)
-                                        .background(Circle().fill(Color.white).frame(width: 36, height: 36))
                                 }
+
+                            case .user:
+                                Image(systemName: "location.circle.fill")
+                                    .font(.system(size: 30))
+                                    .foregroundColor(.blue)
+                                    .background(Circle().fill(Color.white).frame(width: 36, height: 36))
                             }
                         }
                     }
                     .edgesIgnoringSafeArea(.top)
                     .frame(height: 500)
 
+                    // Search Bar
                     HStack {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(.gray)
@@ -135,15 +128,16 @@ struct MapView: View {
                     .padding()
                     .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
 
+                    // Popup
                     if showPopup, let event = selectedEvent {
                         VStack {
                             Spacer()
                             VStack(spacing: 8) {
                                 HStack {
                                     Spacer()
-                                    Button(action: {
+                                    Button {
                                         showPopup = false
-                                    }) {
+                                    } label: {
                                         Image(systemName: "xmark.circle.fill")
                                             .foregroundColor(.white)
                                             .font(.title3)
@@ -183,12 +177,14 @@ struct MapView: View {
                         .animation(.easeInOut, value: showPopup)
                     }
 
+                    // Navigation to Details
                     NavigationLink(destination: selectedEvent.map { EventDetailsView(event: $0) },
                                    isActive: $navigateToDetails) {
                         EmptyView()
                     }
                 }
 
+                // Upcoming Events
                 VStack(alignment: .leading) {
                     Text("Upcoming Events")
                         .font(.headline)

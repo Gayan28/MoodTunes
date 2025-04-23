@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MoodSelectionView: View {
+    @EnvironmentObject var theme: ThemeManager
     @State private var isNavigatingToDetector = false
 
     let columns = [
@@ -16,51 +17,57 @@ struct MoodSelectionView: View {
     ]
 
     var body: some View {
-        NavigationView {
-            VStack(alignment: .leading, spacing: 10) {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 16) {
                 Spacer().frame(height: 40)
 
-                Text("Choose Your Mood")
-                    .font(.title)
-                    .foregroundColor(.white)
+                // Heading
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Choose Your Mood")
+                        .font(.largeTitle.bold())
+                        .foregroundColor(theme.textPrimary)
 
-                Text("What is your mood today?")
-                    .font(.title2)
-                    .foregroundColor(.gray)
+                    Text("What is your mood today?")
+                        .font(.title3)
+                        .foregroundColor(.gray)
+                }
 
-                LazyVGrid(columns: columns, spacing: 16) {
+                // Mood Options
+                LazyVGrid(columns: columns, spacing: 20) {
                     MoodItem(imageName: "happymood", title: "Happy")
                     MoodItem(imageName: "angrymood", title: "Angry")
                     MoodItem(imageName: "sadmood", title: "Sad")
                     MoodItem(imageName: "relaxmood", title: "Relax")
                 }
 
+                // Auto-Detect Button
                 NavigationLink(destination: MoodDetectorView(), isActive: $isNavigatingToDetector) {
                     Button(action: {
                         isNavigatingToDetector = true
                     }) {
                         Text("Auto - Detect")
-                            .fontWeight(.bold)
+                            .font(.system(size: 18, weight: .bold))
                             .padding()
                             .frame(maxWidth: .infinity)
                             .background(Color.blue)
                             .foregroundColor(.white)
-                            .cornerRadius(12)
+                            .cornerRadius(14)
                     }
                 }
-                .padding(.top, 40)
+                .padding(.top, 32)
 
                 Spacer()
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 20)
-            .background(Color(hex: "#0F0817"))
+            .background(theme.background)
             .edgesIgnoringSafeArea(.bottom)
             .navigationBarHidden(true)
         }
     }
 }
 
+// MARK: - Mood Item
 struct MoodItem: View {
     var imageName: String
     var title: String
@@ -72,7 +79,7 @@ struct MoodItem: View {
                 .scaledToFill()
                 .frame(height: 185)
                 .clipped()
-                .cornerRadius(12)
+                .cornerRadius(14)
 
             Text(title)
                 .font(.system(size: 20, weight: .semibold))
@@ -81,8 +88,10 @@ struct MoodItem: View {
     }
 }
 
+// MARK: - Preview
 struct MoodSelectionView_Previews: PreviewProvider {
     static var previews: some View {
         MoodSelectionView()
+            .environmentObject(ThemeManager())
     }
 }

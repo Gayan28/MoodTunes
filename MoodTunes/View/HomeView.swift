@@ -35,6 +35,9 @@ struct HomeView: View {
                     .frame(height: 70)
                     .frame(maxWidth: .infinity)
                     .background(Color.black.opacity(0.9))
+                    .accessibilityElement(children: .contain)
+                    .accessibilityLabel("Tab Bar")
+                    .accessibilityHint("Navigate between Home, Moods, Map, Now Playing, and Settings")
             }
             .edgesIgnoringSafeArea(.bottom)
             .navigationBarTitle("")
@@ -53,14 +56,18 @@ struct DashboardView: View {
                 // Greeting Section
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Hello Gayan,")
-                        .font(.largeTitle)
+                        .font(.title)
+                        .fontWeight(.bold)
                         .foregroundColor(.white)
                         .layoutPriority(1)
+                        .accessibilityLabel("Hello Gayan")
 
                     Text("How Was Your Day?")
-                        .font(.largeTitle)
+                        .font(.title)
+                        .fontWeight(.bold)
                         .foregroundColor(.white)
                         .layoutPriority(1)
+                        .accessibilityLabel("How was your day?")
                 }
                 .padding(.top, 20)
 
@@ -78,6 +85,8 @@ struct DashboardView: View {
                                     .frame(width: 350, height: 440)
                                     .clipped()
                                     .cornerRadius(12)
+                                    .accessibilityLabel("Daily Mood Image")
+                                    .accessibilityHint("Displays a mood-based dashboard image")
                             )
                     }
                     Spacer()
@@ -88,12 +97,20 @@ struct DashboardView: View {
                     NavigationLink(destination: FavouritesView()) {
                         CategoryCard(title: "Favourites", imageName: "Image 1")
                     }
+                    .accessibilityLabel("Favourites")
+                    .accessibilityHint("Tap to view your favourite songs")
+
                     NavigationLink(destination: AllSongsView()) {
                         CategoryCard(title: "Playlists", imageName: "Image 2")
                     }
+                    .accessibilityLabel("Playlists")
+                    .accessibilityHint("Tap to explore your playlists")
+
                     NavigationLink(destination: RecentsView()) {
                         CategoryCard(title: "Recents", imageName: "Image 3")
                     }
+                    .accessibilityLabel("Recents")
+                    .accessibilityHint("Tap to view recently played songs")
                 }
                 .padding(.top, 20)
             }
@@ -117,6 +134,7 @@ struct CategoryCard: View {
                 .frame(width: 110, height: 125)
                 .clipped()
                 .cornerRadius(10)
+                .accessibilityHidden(true)
 
             Text(title)
                 .font(.system(size: 16, weight: .bold))
@@ -127,6 +145,9 @@ struct CategoryCard: View {
         }
         .frame(width: 110, height: 125)
         .cornerRadius(10)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(title)
+        .accessibilityHint("Tap to view \(title.lowercased())")
     }
 }
 

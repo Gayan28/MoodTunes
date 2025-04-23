@@ -35,21 +35,26 @@ struct FavouritesView: View {
                     .aspectRatio(contentMode: .fill)
                     .frame(height: 260)
                     .clipped()
+                    .accessibilityHidden(true)
                 
                 LinearGradient(gradient: Gradient(colors: [.clear, .black.opacity(0.8)]),
                                startPoint: .top,
                                endPoint: .bottom)
                     .frame(height: 260)
+                    .accessibilityHidden(true)
                 
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Favourites")
                         .font(.largeTitle)
                         .bold()
                         .foregroundColor(.white)
-                    
+                        .accessibilityAddTraits(.isHeader)
+                        .accessibilityLabel("Favourites heading")
+
                     Text("All your favourite songs")
                         .font(.subheadline)
                         .foregroundColor(.white.opacity(0.8))
+                        .accessibilityLabel("All your favourite songs")
                 }
                 .padding()
             }
@@ -64,25 +69,32 @@ struct FavouritesView: View {
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: 55, height: 55)
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
-                            
+                                .accessibilityHidden(true)
+
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(song.title)
                                     .font(.headline)
                                     .foregroundColor(.white)
+                                    .accessibilityLabel("Title: \(song.title)")
+
                                 Text(song.artist)
                                     .font(.subheadline)
                                     .foregroundColor(.gray)
+                                    .accessibilityLabel("Artist: \(song.artist)")
                             }
-                            
+
                             Spacer()
-                            
+
                             if let duration = song.duration {
                                 Text(duration)
                                     .font(.footnote)
                                     .foregroundColor(.gray)
+                                    .accessibilityLabel("Duration: \(duration)")
                             }
                         }
                         .padding(.horizontal)
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel("\(song.title) by \(song.artist). Duration \(song.duration ?? "unknown")")
                     }
                 }
                 .padding(.top, 20)

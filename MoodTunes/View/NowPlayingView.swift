@@ -7,69 +7,83 @@
 import SwiftUI
 
 struct NowPlayingView: View {
+    @State private var isPlaying = true
+    @State private var isFavorite = false
+    @State private var currentTime: Double = 3
+    let totalTime: Double = 233 // 3:53 in seconds
+
     var body: some View {
         VStack(spacing: 30) {
-            
+
             // Playlist header
             Text("PLAYING FROM PLAYLIST")
                 .foregroundColor(.white)
                 .font(.headline)
                 .padding(.bottom, 10)
-            
-            // Image of the song being played
+
+            // Album Art
             Image("playingImg")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 320, height: 320)
-                .cornerRadius(12)
-            
-            // Song title
-            Text("Naiyo Lagda")
-                .foregroundColor(.white)
-                .font(.title)
-                .fontWeight(.semibold)
-            
-            // Artist name
-            Text("Arijit Singh")
-                .foregroundColor(.gray)
-                .font(.subheadline)
-            
-            // Progress bar section
+                .frame(width: 300, height: 300)
+                .cornerRadius(16)
+
+            // Song Info
+            VStack(spacing: 6) {
+                Text("Naiyo Lagda")
+                    .foregroundColor(.white)
+                    .font(.title)
+                    .fontWeight(.bold)
+
+                Text("Arijit Singh")
+                    .foregroundColor(.gray)
+                    .font(.subheadline)
+            }
+
+            // Progress Bar
             VStack(spacing: 4) {
-                Slider(value: .constant(0.01), in: 0...1)
+                Slider(value: $currentTime, in: 0...totalTime)
                     .accentColor(.white)
                     .padding(.horizontal, 30)
-                
-                // Time labels (start and end)
+
                 HStack {
-                    Text("0:03")
+                    Text(formatTime(currentTime))
                     Spacer()
-                    Text("3:53")
+                    Text(formatTime(totalTime))
                 }
                 .font(.caption)
                 .foregroundColor(.white)
                 .padding(.horizontal, 30)
             }
-            
-            // Player controls (icons for shuffle, backward, pause, forward, and heart)
+
+            // Playback Controls
             HStack(spacing: 40) {
-                Image(systemName: "shuffle")
-                    .font(.system(size: 24))
-                Image(systemName: "backward.fill")
-                    .font(.system(size: 24))
-                Image(systemName: "pause.circle.fill")
-                    .font(.system(size: 50))
-                Image(systemName: "forward.fill")
-                    .font(.system(size: 24))
-                Image(systemName: "heart")
-                    .font(.system(size: 24))
+                ControlButton(systemName: "shuffle")
+                ControlButton(systemName: "backward.fill")
+
+                Button(action: {
+                    isPlaying.toggle()
+                }) {
+                    Image(systemName: isPlaying ? "pause.circle.fill" : "play.circle.fill")
+                        .font(.system(size: 50))
+                }
+
+                ControlButton(systemName: "forward.fill")
+
+                Button(action: {
+                    isFavorite.toggle()
+                }) {
+                    Image(systemName: isFavorite ? "heart.fill" : "heart")
+                        .font(.system(size: 24))
+                        .foregroundColor(isFavorite ? .red : .white)
+                }
             }
             .foregroundColor(.white)
             .padding(.top, 10)
-            
+
             Spacer()
-            
-            // Additional footer text (could be used for showing music-related info)
+
+            // Footer
             Text("Enjoy your music!")
                 .foregroundColor(.white)
                 .font(.caption)
@@ -82,8 +96,29 @@ struct NowPlayingView: View {
             LinearGradient(gradient: Gradient(colors: [Color.purple, Color.black]),
                            startPoint: .top,
                            endPoint: .bottom)
-            .edgesIgnoringSafeArea(.all)
+                .edgesIgnoringSafeArea(.all)
         )
+    }
+
+    // MARK: - Helpers
+
+    func formatTime(_ time: Double) -> String {
+        let minutes = Int(time) / 60
+        let seconds = Int(time) % 60
+        return String(format: "%d:%02d", minutes, seconds)
+    }
+}
+
+struct ControlButton: View {
+    let systemName: String
+
+    var body: some View {
+        Button {
+            // You can later link this to audio control actions
+        } label: {
+            Image(systemName: systemName)
+                .font(.system(size: 24))
+        }
     }
 }
 

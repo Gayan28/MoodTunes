@@ -1,3 +1,4 @@
+//
 //  MoodDetectorView.swift
 //  MoodTunes
 //
@@ -7,15 +8,17 @@
 import SwiftUI
 
 struct MoodDetectorView: View {
+    @EnvironmentObject var theme: ThemeManager
+
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 30) {
                 
                 // Header
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Mood Detector")
-                        .font(.title)
-                        .foregroundColor(.white)
+                        .font(.largeTitle.bold())
+                        .foregroundColor(theme.textPrimary)
 
                     Text("Let's check your mood!")
                         .font(.title3)
@@ -25,17 +28,24 @@ struct MoodDetectorView: View {
                 .padding(.horizontal)
                 .padding(.top)
 
-                // Camera Placeholder
+                // Camera Placeholder / Future Live Camera Feed
                 RoundedRectangle(cornerRadius: 20)
                     .fill(Color.gray.opacity(0.6))
-                    .frame(width: 350, height: 400)
+                    .frame(width: 340, height: 400)
                     .overlay(
-                        Text("Camera View")
-                            .foregroundColor(.white)
-                            .font(.system(size: 16, weight: .medium))
+                        VStack {
+                            Image(systemName: "camera.viewfinder")
+                                .font(.system(size: 40))
+                                .foregroundColor(.white.opacity(0.8))
+                                .padding(.bottom, 10)
+
+                            Text("Camera View")
+                                .foregroundColor(.white)
+                                .font(.system(size: 16, weight: .medium))
+                        }
                     )
 
-                // Bottom Message
+                // Instruction Text
                 Text("Show your face to the camera to detect your mood")
                     .font(.title3)
                     .foregroundColor(.white)
@@ -47,7 +57,7 @@ struct MoodDetectorView: View {
             .padding(.top)
             .padding(.bottom)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(hex: "0F0817"))
+            .background(theme.background)
             .edgesIgnoringSafeArea(.bottom)
             .navigationBarTitleDisplayMode(.inline)
         }
@@ -58,5 +68,6 @@ struct MoodDetectorView: View {
 struct MoodDetectorView_Previews: PreviewProvider {
     static var previews: some View {
         MoodDetectorView()
+            .environmentObject(ThemeManager())
     }
 }

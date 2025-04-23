@@ -15,6 +15,7 @@ struct EventDetailsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
 
+            // Heading
             Text("Concert Details")
                 .font(.headline)
                 .bold()
@@ -22,7 +23,10 @@ struct EventDetailsView: View {
                 .frame(maxWidth: .infinity)
                 .multilineTextAlignment(.center)
                 .padding(.top, 20)
+                .accessibilityAddTraits(.isHeader)
+                .accessibilityLabel("Concert Details heading")
 
+            // Concert Image
             HStack {
                 Spacer()
                 Image(event.imageName)
@@ -30,9 +34,12 @@ struct EventDetailsView: View {
                     .aspectRatio(contentMode: .fit)
                     .cornerRadius(12)
                     .frame(width: 300)
+                    .accessibilityLabel("Image of concert: \(event.name)")
+                    .accessibilityHidden(false)
                 Spacer()
             }
 
+            // Name and Genre
             VStack(alignment: .leading, spacing: 8) {
                 Text(event.name)
                     .font(.title3)
@@ -43,7 +50,10 @@ struct EventDetailsView: View {
                     .foregroundColor(.gray)
                     .font(.subheadline)
             }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("\(event.name), genre: \(event.genre)")
 
+            // Date and Venue
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Date and Time")
@@ -53,7 +63,9 @@ struct EventDetailsView: View {
                         .foregroundColor(.white)
                         .font(.body)
                 }
+
                 Spacer()
+
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Venue")
                         .font(.subheadline)
@@ -63,18 +75,26 @@ struct EventDetailsView: View {
                         .font(.body)
                 }
             }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("Date and time: \(event.date), Venue: \(event.venue)")
 
+            // About Section
             VStack(alignment: .leading, spacing: 8) {
                 Text("About the Concert")
                     .font(.headline)
                     .foregroundColor(.white)
+                    .accessibilityAddTraits(.isHeader)
+                    .accessibilityLabel("About the concert section")
+
                 Text(event.description)
                     .font(.subheadline)
                     .foregroundColor(.gray)
+                    .accessibilityLabel(event.description)
             }
 
             Spacer()
 
+            // Directions Button
             Button(action: {
                 openGoogleMapsDirections()
             }) {
@@ -86,10 +106,13 @@ struct EventDetailsView: View {
                     .background(Color.blue)
                     .cornerRadius(12)
             }
+            .accessibilityLabel("Get directions to the concert")
+            .accessibilityHint("Opens Google Maps with driving directions to the concert venue")
         }
         .padding()
         .background(Color.black.edgesIgnoringSafeArea(.all))
         .toolbar(.hidden, for: .tabBar)
+        .dynamicTypeSize(.large ... .xxLarge) // Supports larger accessibility font sizes
     }
 
     func openGoogleMapsDirections() {

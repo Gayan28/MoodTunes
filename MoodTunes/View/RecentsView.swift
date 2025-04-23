@@ -6,6 +6,7 @@
 
 import SwiftUI
 
+// Song model
 struct Song1: Identifiable {
     let id = UUID()
     let title: String
@@ -14,6 +15,7 @@ struct Song1: Identifiable {
     let duration: String?
 }
 
+// Main Recents View
 struct RecentsView: View {
     
     let songs: [Song1] = [
@@ -26,61 +28,84 @@ struct RecentsView: View {
     ]
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            
-            // Full Cover Header
-            ZStack(alignment: .bottomLeading) {
-                Image("RecentsImg")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(height: 260)
-                    .clipped()
+        NavigationView {
+            VStack(alignment: .leading, spacing: 20) {
                 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Recents")
-                        .font(.largeTitle)
-                        .bold()
-                        .foregroundColor(.white)
+                // Header Banner
+                ZStack(alignment: .bottomLeading) {
+                    Image("RecentsImg")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(height: 260)
+                        .clipped()
                     
-                    Text("All Recently played songs!")
-                        .font(.subheadline)
-                        .foregroundColor(.white.opacity(0.8))
+                    LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0.0), Color.black.opacity(0.6)]),
+                                   startPoint: .top,
+                                   endPoint: .bottom)
+                        .frame(height: 260)
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Recents")
+                            .font(.largeTitle)
+                            .bold()
+                            .foregroundColor(.white)
+                        
+                        Text("All recently played songs!")
+                            .font(.subheadline)
+                            .foregroundColor(.white.opacity(0.8))
+                    }
+                    .padding()
                 }
-                .padding()
-            }
-            
-            // Song List
-            ScrollView {
-                VStack(spacing: 20) {
-                    ForEach(songs) { song in
-                        HStack {
-                            Image(song.imageName)
-                                .resizable()
-                                .frame(width: 50, height: 50)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                            
-                            VStack(alignment: .leading) {
-                                Text(song.title)
-                                    .fontWeight(.semibold)
-                                    .foregroundColor(.white)
-                                Text(song.artist)
-                                    .font(.subheadline)
-                                    .foregroundColor(.gray)
-                            }
-                            Spacer()
-                            if let duration = song.duration {
-                                Text(duration)
-                                    .font(.footnote)
-                                    .foregroundColor(.gray)
+                
+                // Song List
+                ScrollView {
+                    LazyVStack(spacing: 16) {
+                        ForEach(songs) { song in
+                            NavigationLink(destination: NowPlayingView()) {
+                                SongRow(song: song)
                             }
                         }
-                        .padding(.vertical, 10)
                     }
+                    .padding(.horizontal)
+                    .padding(.top, 10)
                 }
-                .padding(.horizontal)
+            }
+            .background(Color.black.edgesIgnoringSafeArea(.all))
+            .navigationBarHidden(true)
+        }
+    }
+}
+
+// Reusable Song Row View
+struct SongRow: View {
+    let song: Song1
+    
+    var body: some View {
+        HStack {
+            Image(song.imageName)
+                .resizable()
+                .frame(width: 50, height: 50)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(song.title)
+                    .font(.headline)
+                    .foregroundColor(.white)
+                
+                Text(song.artist)
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+            }
+            
+            Spacer()
+            
+            if let duration = song.duration {
+                Text(duration)
+                    .font(.footnote)
+                    .foregroundColor(.gray)
             }
         }
-        .background(Color.black.edgesIgnoringSafeArea(.all))
+        .padding(.vertical, 8)
     }
 }
 
