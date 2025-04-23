@@ -1,3 +1,4 @@
+//
 //  SettingsView.swift
 //  MoodTunes
 //
@@ -24,11 +25,25 @@ struct SettingsView: View {
     @State private var activeAlert: ActiveAlert?
     @State private var successMessageText = ""
 
+    @State private var showFullNameSheet = false
+    @State private var showEmailSheet = false
+    @State private var showPasswordSheet = false
+
+    @State private var editedFullName = ""
+    @State private var editedEmail = ""
+
+    @State private var currentPassword = ""
+    @State private var newPassword = ""
+    @State private var confirmPassword = ""
+
+    // Password visibility
+    @State private var showNewPassword = false
+    @State private var showConfirmPassword = false
+
     var body: some View {
         NavigationView {
             ZStack {
-                Color(hex: "#0F0817")
-                    .ignoresSafeArea()
+                Color(hex: "#0F0817").ignoresSafeArea()
 
                 VStack(alignment: .leading, spacing: 10) {
                     Text("My Account")
@@ -40,21 +55,25 @@ struct SettingsView: View {
 
                     List {
                         Section(header: Text("Profile").foregroundColor(.white)) {
-                            HStack {
-                                Label("Full Name", systemImage: "person.fill")
-                                Spacer()
-                                Text(fullName)
-                                    .foregroundColor(.secondary)
+                            Button {
+                                editedFullName = fullName
+                                showFullNameSheet = true
+                            } label: {
+                                profileRow(label: "Full Name", value: fullName, icon: "person.fill")
                             }
-                            .listRowBackground(Color(hex: "#EBEDF0"))
 
-                            HStack {
-                                Label("Email", systemImage: "envelope")
-                                Spacer()
-                                Text(email)
-                                    .foregroundColor(.secondary)
+                            Button {
+                                editedEmail = email
+                                showEmailSheet = true
+                            } label: {
+                                profileRow(label: "Email", value: email, icon: "envelope")
                             }
-                            .listRowBackground(Color(hex: "#EBEDF0"))
+
+                            Button {
+                                showPasswordSheet = true
+                            } label: {
+                                profileRow(label: "Password", value: "********", icon: "lock.fill")
+                            }
 
                             Button(role: .destructive) {
                                 activeAlert = .deleteAccount
@@ -105,36 +124,136 @@ struct SettingsView: View {
                 case .logout:
                     return Alert(
                         title: Text("Are you sure you want to logout?"),
-                        primaryButton: .destructive(Text("Logout")) {
-                            logout()
-                        },
+                        primaryButton: .destructive(Text("Logout")) { logout() },
                         secondaryButton: .cancel()
                     )
                 case .deleteAccount:
                     return Alert(
                         title: Text("Are you sure you want to delete your account?"),
                         message: Text("This action cannot be undone."),
-                        primaryButton: .destructive(Text("Delete")) {
-                            deleteAccount()
-                        },
+                        primaryButton: .destructive(Text("Delete")) { deleteAccount() },
                         secondaryButton: .cancel()
                     )
                 case .success:
-                    return Alert(
-                        title: Text(successMessageText),
-                        dismissButton: .default(Text("OK")) {
-                            if successMessageText.contains("successfully") {
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                    exit(0)
-                                }
-                            }
-                        }
-                    )
+                    return Alert(title: Text(successMessageText), dismissButton: .default(Text("OK")))
                 case .none:
                     return Alert(title: Text("Unknown error"))
                 }
             }
+            .navigationBarHidden(true)
+
+            // Full Name Sheet
+            .sheet(isPresented: $showFullNameSheet) {
+                VStack(spacing: 20) {
+                    Text("Edit Full Name").font(.title2).bold()
+                    TextField("Full Name", text: $editedFullName)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+
+                    Button("Save") {
+                        updateField("fullName", value: editedFullName)
+                        fullName = editedFullName
+                        showFullNameSheet = false
+                    }
+                    .buttonStylePrimary()
+
+                    Spacer()
+                }.padding()
+            }
+
+            // Email Sheet
+            .sheet(isPresented: $showEmailSheet) {
+                VStack(spacing: 20) {
+                    Text("Edit Email").font(.title2).bold()
+                    TextField("Email", text: $editedEmail)
+                        .keyboardType(.emailAddress)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+
+                    Button("Save") {
+                        updateField("email", value: editedEmail)
+                        email = editedEmail
+                        showEmailSheet = false
+                    }
+                    .buttonStylePrimary()
+
+                    Spacer()
+                }.padding()
+            }
+
+            // Password Sheet with Eye Icons
+            .sheet(isPresented: $showPasswordSheet) {
+                VStack(spacing: 20) {
+                    Text("Change Password").font(.title2).bold()
+
+                    SecureField("Current Password", text: $currentPassword)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+
+                    HStack {
+                        Group {
+                            if showNewPassword {
+                                TextField("New Password", text: $newPassword)
+                            } else {
+                                SecureField("New Password", text: $newPassword)
+                            }
+                        }
+                        Button(action: {
+                            showNewPassword.toggle()
+                        }) {
+                            Image(systemName: showNewPassword ? "eye" : "eye.slash")
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    .padding(10)
+                    .background(Color(.systemGray6))
+                    .cornerRadius(8)
+
+                    HStack {
+                        Group {
+                            if showConfirmPassword {
+                                TextField("Confirm New Password", text: $confirmPassword)
+                            } else {
+                                SecureField("Confirm New Password", text: $confirmPassword)
+                            }
+                        }
+                        Button(action: {
+                            showConfirmPassword.toggle()
+                        }) {
+                            Image(systemName: showConfirmPassword ? "eye" : "eye.slash")
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    .padding(10)
+                    .background(Color(.systemGray6))
+                    .cornerRadius(8)
+
+                    Button("Update Password") {
+                        guard newPassword == confirmPassword else {
+                            successMessageText = "Passwords do not match."
+                            activeAlert = .success
+                            showAlert = true
+                            return
+                        }
+                        reauthenticateAndChangePassword()
+                        showPasswordSheet = false
+                    }
+                    .buttonStylePrimary()
+
+                    Spacer()
+                }.padding()
+            }
         }
+    }
+
+    // MARK: - Profile Row
+    private func profileRow(label: String, value: String, icon: String) -> some View {
+        HStack {
+            Label(label, systemImage: icon)
+            Spacer()
+            Text(value).foregroundColor(.secondary)
+            Image(systemName: "chevron.right")
+                .foregroundColor(.gray)
+        }
+        .contentShape(Rectangle())
+        .listRowBackground(Color(hex: "#EBEDF0"))
     }
 
     private func fetchUserData() {
@@ -143,27 +262,20 @@ struct SettingsView: View {
             email = "Not logged in"
             return
         }
+        Firestore.firestore().collection("users").document(uid).getDocument { document, _ in
+            if let data = document?.data() {
+                fullName = data["fullName"] as? String ?? "No Name"
+                email = data["email"] as? String ?? "No Email"
+            }
+        }
+    }
 
-        let db = Firestore.firestore()
-        let userRef = db.collection("users").document(uid)
-
-        userRef.getDocument { document, error in
+    private func updateField(_ key: String, value: String) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        Firestore.firestore().collection("users").document(uid).updateData([key: value]) { error in
             if let error = error {
-                print("Error fetching user data: \(error.localizedDescription)")
-                fullName = "Error"
-                email = "Error"
-                return
+                print("Error updating \(key): \(error.localizedDescription)")
             }
-
-            guard let document = document, document.exists,
-                  let data = document.data() else {
-                fullName = "No data"
-                email = "No data"
-                return
-            }
-
-            fullName = data["fullName"] as? String ?? "No Name"
-            email = data["email"] as? String ?? "No Email"
         }
     }
 
@@ -172,9 +284,7 @@ struct SettingsView: View {
             try Auth.auth().signOut()
             fullName = "Logged Out"
             email = "Logged Out"
-            successMessageText = "You have been logged out successfully."
-            activeAlert = .success
-            showAlert = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { exit(0) }
         } catch {
             print("Logout failed: \(error.localizedDescription)")
         }
@@ -182,28 +292,51 @@ struct SettingsView: View {
 
     private func deleteAccount() {
         guard let user = Auth.auth().currentUser else { return }
-
-        let db = Firestore.firestore()
-        let userRef = db.collection("users").document(user.uid)
-
-        userRef.delete { error in
+        Firestore.firestore().collection("users").document(user.uid).delete { error in
             if let error = error {
-                print("Error deleting user data from Firestore: \(error.localizedDescription)")
+                print("Firestore delete error: \(error.localizedDescription)")
+                return
+            }
+            fullName = "Deleted"
+            email = "Deleted"
+            successMessageText = "Account deleted successfully."
+            activeAlert = .success
+            showAlert = true
+        }
+    }
+
+    private func reauthenticateAndChangePassword() {
+        guard let user = Auth.auth().currentUser,
+              let email = user.email else { return }
+
+        let credential = EmailAuthProvider.credential(withEmail: email, password: currentPassword)
+
+        user.reauthenticate(with: credential) { _, error in
+            if let error = error {
+                successMessageText = "Auth failed: \(error.localizedDescription)"
+                activeAlert = .success
+                showAlert = true
                 return
             }
 
-            user.delete { error in
-                if let error = error {
-                    print("Error deleting user account: \(error.localizedDescription)")
-                } else {
-                    fullName = "Deleted"
-                    email = "Deleted"
-                    successMessageText = "Account deleted successfully."
-                    activeAlert = .success
-                    showAlert = true
-                }
+            user.updatePassword(to: newPassword) { error in
+                successMessageText = error != nil ? "Update failed: \(error!.localizedDescription)" : "Password updated successfully."
+                activeAlert = .success
+                showAlert = true
             }
         }
+    }
+}
+
+// MARK: - Primary Button Style
+extension View {
+    func buttonStylePrimary() -> some View {
+        self
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(10)
     }
 }
 
