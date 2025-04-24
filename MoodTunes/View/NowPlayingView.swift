@@ -1,4 +1,5 @@
-//  NowPlayingView 2.swift
+//
+//  NowPlayingView.swift
 //  MoodTunes
 //
 //  Created by Gayan Kavinda on 2025-04-11.
@@ -58,20 +59,43 @@ struct NowPlayingView: View {
 
             // Playback Controls
             HStack(spacing: 40) {
-                ControlButton(systemName: "shuffle")
-                ControlButton(systemName: "backward.fill")
+                Button(action: {
+                    // Toggle shuffle logic (placeholder)
+                    print("Shuffle tapped")
+                }) {
+                    Image(systemName: "shuffle")
+                        .font(.system(size: 24))
+                }
+
+                Button(action: {
+                    // Simulate previous track logic
+                    print("Previous track tapped")
+                    currentTime = 0 // Reset to beginning
+                }) {
+                    Image(systemName: "backward.fill")
+                        .font(.system(size: 24))
+                }
 
                 Button(action: {
                     isPlaying.toggle()
+                    print(isPlaying ? "Playing" : "Paused")
                 }) {
                     Image(systemName: isPlaying ? "pause.circle.fill" : "play.circle.fill")
                         .font(.system(size: 50))
                 }
 
-                ControlButton(systemName: "forward.fill")
+                Button(action: {
+                    // Simulate next track logic
+                    print("Next track tapped")
+                    currentTime = 0 // Reset to simulate next
+                }) {
+                    Image(systemName: "forward.fill")
+                        .font(.system(size: 24))
+                }
 
                 Button(action: {
                     isFavorite.toggle()
+                    print(isFavorite ? "Added to favorites" : "Removed from favorites")
                 }) {
                     Image(systemName: isFavorite ? "heart.fill" : "heart")
                         .font(.system(size: 24))
@@ -100,25 +124,10 @@ struct NowPlayingView: View {
         )
     }
 
-    // MARK: - Helpers
-
     func formatTime(_ time: Double) -> String {
         let minutes = Int(time) / 60
         let seconds = Int(time) % 60
         return String(format: "%d:%02d", minutes, seconds)
-    }
-}
-
-struct ControlButton: View {
-    let systemName: String
-
-    var body: some View {
-        Button {
-            // You can later link this to audio control actions
-        } label: {
-            Image(systemName: systemName)
-                .font(.system(size: 24))
-        }
     }
 }
 
